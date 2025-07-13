@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="256" height="256" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  
+  <!-- App Icon - Complete DATEYE in square format -->
+  <!-- Centered and scaled to fit 256x256 with padding -->
+  
+  <g transform="translate(128,128) scale(0.018)">
+    <!-- DAT part (gray with 69% opacity) -->
+    <path d="M-3321,843.05l-205.917,-0l-0,-702.75l200.291,-0c126.125,-0 259.542,24 259.542,350.625c0,326.625 -187.25,352.125 -253.917,352.125Zm367.584,-756.788c-108.334,-111.42 -189.084,-135.879 -400.667,-135.879l-391.5,0l0,1081.09l426.25,-0c180.917,-0 288.25,-45.792 376.125,-168.463c87.917,-122.625 108.333,-265.875 108.333,-372.083c0,-106.208 -10.208,-293.25 -118.541,-404.663Zm582.416,536.538l139.209,-419.375l134.541,419.375l-273.75,-0Zm269.042,-672.417l-255.875,0l-387.417,1081.09l238.625,-0l74.251,-223.671l394.458,-0l71.75,223.671l247.833,-0l-383.625,-1081.09Zm2942.81,0l-0,195.709l-2076.48,-0l0,885.379l-228.375,-0l0,-885.379l-321.416,-0l-0,-195.709l2626.27,0Z" style="fill-opacity:0.69;fill-rule:nonzero;"/>
+    
+    <!-- EYE part (blue #0087ba) -->
+    <path d="M-219.42,902.31l0,129.209l-556.021,-0l0,-731.046l537.021,-0l0,129.167l-384.896,-0l0,157.5l354.105,-0l-0,129.166l-354.105,0l0,186.004l403.896,0Zm1352.21,0l-0,129.209l-556.084,-0l0,-731.046l537.084,-0l-0,129.167l-384.959,-0l0,157.5l354.125,-0l0,129.166l-354.125,0l0,186.004l403.959,0Zm-641.917,-601.837l-245.417,452l0,279.046l-152.125,-0l0,-279.046l-253.041,-452l178,-0l151.083,319.083l147.375,-319.083l174.125,-0Z" style="fill:#0087ba;fill-rule:nonzero;"/>
+  </g>
+  
+  <!-- Subtle background circle for app icon recognition -->
+  <circle cx="128" cy="128" r="120" style="fill:none;stroke:#e5e5e5;stroke-width:0.5;stroke-opacity:0.3;"/>
+  
+</svg>

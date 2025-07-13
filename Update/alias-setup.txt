@@ -1,0 +1,6 @@
+# Add this to your shell configuration file:
+# For zsh: ~/.zshrc
+# For bash: ~/.bashrc or ~/.bash_profile
+
+# DATEYE Documentation Update Alias
+alias dateye='cd /Users/culfin/Documents/Projekte/Dateye/docs/Update && ./update.sh'

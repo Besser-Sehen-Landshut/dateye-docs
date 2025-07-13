@@ -1,0 +1,1028 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0.
+  title: Eye-Office - Api
+  description: A OpenAPI specification
+
+servers:
+- url: '{url}:{port}/{version}'
+  variables:
+    url:
+      default: 'https://127.0.0.1'
+    version:
+      enum:
+        - 'v1'
+      default: 'v1'
+    port:
+      enum:
+        - '4450'
+      description: Test server"
+      default: '4450'
+
+components:
+  schemas:
+    IdNamePairData:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        name:
+          type: string
+          nullable: true
+          example: "Sample Name"
+    CustomerShort:
+      type: object
+      required:
+        - id
+        - updatedAt
+        - isActive
+      properties:
+        id:
+          type: integer
+          example: 1314
+        isActive:
+          type: boolean
+          example: true
+        title:
+          type: string
+          example: "Herr Dr."
+        firstname:
+          type: string
+          example: "Max"
+        lastname:
+          type: string
+          example: "Mustermann"
+        birthday:
+          type: string
+          format: date
+          example: "2004-01-25"
+        sex:
+          type: string
+          enum:
+          - female
+          - male
+          example: "male"
+
+    Customer:
+      allOf:
+      - $ref: '#/components/schemas/CustomerShort' # has all properties of a CustomerShort
+      
+    CustomerNew:
+      type: object
+      required:
+        - branch
+        - firstname
+        - lastname
+      properties:
+        branch:
+          type: integer
+          description: Shop number
+          example: 1
+        isActive:
+          type: boolean
+          example: true
+        salutation:
+          type: string
+          example: "Herr Dr."
+        firstname:
+          type: string
+          example: "Max"
+        lastname:
+          type: string
+          example: "Mustermann"
+        street:
+          type: string
+          example: "Hauptstraße"
+        housenumber:
+          type: string
+          example: "2 a"
+        zip:
+          type: string
+          example: "48165"
+        city:
+          type: string
+          example: "Münster"
+        birthday:
+          type: string
+          format: date
+          example: "2004-01-25"
+
+    RefractionShort:
+     allOf:
+      - $ref: '#/components/schemas/RefractionValues'
+      - properties:
+          id:
+            type: integer
+            example: 1234
+          useForOrder:
+            type: string
+            enum:
+            - internal
+            - external
+            - unknown
+            example: "internal"
+          comment:
+            type: string
+          person:
+            $ref: '#/components/schemas/IdNamePairData'
+          date:
+            type: string
+            format: date
+            example: "2024-06-15"
+
+    RefractionSide:
+      type: object
+      properties:
+        sphere:
+          type: number
+        cylinder:
+          type: number
+        axisCylinder:
+          type: integer
+        addition:
+          type: number
+        prismHorizontalValue:
+          type: number
+        prismHorizontalAxis:
+          type: integer
+        prismVerticalValue:
+          type: number
+        prismVerticalAxis:
+          type: integer
+        prismResultingValue:
+          type: number
+        prismResultingAxis:
+          type: integer
+        backVertexDistance:
+          type: number
+        interpupillaryDistance:
+          type: number
+        visusSc:
+          type: number
+        visusCc:
+          type: number
+
+    RefractionValues:
+      type: object
+      properties:
+        rightEye:
+          $ref: '#/components/schemas/RefractionSide'
+          nullable: true
+        leftEye:
+          $ref: '#/components/schemas/RefractionSide'
+          nullable: true
+        visusCcBin:
+          type: number
+        visusScBin:
+          type: number
+
+    RefractionTypeData:
+      type: object
+      properties:
+        objectiveValues:
+          $ref: '#/components/schemas/RefractionValues'
+          nullable: true
+        subjectiveValues:
+          $ref: '#/components/schemas/RefractionValues'
+          nullable: true
+        person:
+          $ref: '#/components/schemas/IdNamePairData'
+        date:
+          type: string
+          format: date
+          example: "2024-06-15"
+    Refraction:
+      allOf:
+        - $ref: '#/components/schemas/RefractionShort'
+        - properties:
+            internalData:
+              $ref: '#/components/schemas/RefractionTypeData'
+              nullable: true
+            externalData:
+              $ref: '#/components/schemas/RefractionTypeData'
+              nullable: true
+            useForOrder:
+              type: string
+              enum:
+                - internal
+                - external
+                - unknown
+              example: "internal"
+            comment:
+              type: string
+
+    SpectacleLensShort:
+      type: object
+      properties:
+          orderId:
+            type: integer
+            example: 12345
+          parentId:
+            type: integer
+            nullable: true
+            example: null
+          status:
+            type: string
+            enum:
+            - none
+            - noted
+            - released
+            - ordered
+            - canceled
+            - delivered
+            - complained_noted
+            - complained_released
+            - complained_ordered
+            - complained_delivered
+            - in_progress
+            - inspection
+            - ready
+            - grinding_service
+            example: "grinding_service"
+          orderNo:
+            type: string
+            example: "A123456"
+          isUnpaid:
+            type: boolean
+            example: false
+          isCostEstimate:
+            type: boolean
+            example: false
+          isCanceled:
+            type: boolean
+            example: false
+          isComplaint:
+            type: boolean
+            example: false
+          isInstallmentPayment:
+            type: boolean
+            example: false
+          isCollectable:
+            type: boolean
+            nullable: true
+            example: true
+          orderDate:
+            type: string
+            format: date
+            example: "2024-06-15"
+          article:
+            type: string
+            example: "Spectacle Lens"
+          branch:
+            type: integer
+            example: 101
+          refraId:
+            type: integer
+            example: 5678
+          healthInsuranceStatus:
+            type: string
+            enum:
+              - none
+              - billed
+              - invoicing
+              - costEstimate
+              - canceled
+            nullable: true
+          invoiceNo:
+            type: string
+            nullable: true
+            example: null
+          invoiceDate:
+            type: string
+            format: date
+            nullable: true
+            example: null
+          frame:
+            type: string
+          paymentEnd:
+            type: string
+            format: date
+            nullable: true
+            example: null
+          paymentNext:
+            type: string
+            format: date
+            nullable: true
+            example: null
+          complaintReason:
+            type: string
+          complaintType:
+            type: string
+            example: "none"
+          otherText:
+            type: string
+            example: "Additional notes"
+          priceInvoice:
+            type: number
+            format: double
+            example: 199.99
+          lensTypeRight:
+            type: string
+          lensTypeLeft:
+            type: string
+          salePerson:
+            $ref: '#/components/schemas/IdNamePairData'
+            nullable: true
+          refractionData:
+            $ref: '#/components/schemas/RefractionShort'
+            nullable: true
+
+    SpectacleLensSide:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+          example: true
+        supplier:
+          $ref: '#/components/schemas/IdNamePairData'
+          nullable: true
+        lens:
+          type: object
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/IdNamePairData'
+            - properties:
+                purchasePrice:
+                  type: number
+                  format: double
+                  example: 99.99
+                sellingPrice:
+                  type: number
+                  format: double
+                  example: 199.99
+        diameter:
+          type: object
+          properties:
+            physical:
+              type: integer
+              nullable: true
+              example: 70
+            optical:
+              type: integer
+              nullable: true
+              example: 65
+            isElliptic:
+              type: boolean
+              example: false
+        options:
+          type: array
+          nullable: true
+          items:
+            type: object
+            allOf:
+              - $ref: '#/components/schemas/IdNamePairData'
+              - properties:
+                  isColor:
+                    type: boolean
+                    example: false
+                  isAntiReflex:
+                    type: boolean
+                    example: true
+                  purchasePrice:
+                    type: number
+                    format: double
+                    example: 10.99
+                    nullable: true
+                  sellingPrice:
+                    type: number
+                    format: double
+                    example: 20.99
+                    nullable: true
+
+    SpectacleLens:
+      type: object
+      properties:
+        orderId:
+          type: integer
+          example: 12345
+        orderDate:
+          type: string
+          format: date
+          example: "2024-06-15"
+        salePerson:
+          $ref: '#/components/schemas/IdNamePairData'
+          nullable: true
+        workshopDate:
+          type: string
+          format: date
+          nullable: true
+          example: null
+        workshopPerson:
+          $ref: '#/components/schemas/IdNamePairData'
+          nullable: true
+        inspectionDate:
+          type: string
+          format: date
+          nullable: true
+          example: null
+        inspectionPerson:
+          $ref: '#/components/schemas/IdNamePairData'
+          nullable: true
+        enteredDate:
+          type: string
+          format: date
+          nullable: true
+          example: null
+        enteredPerson:
+          $ref: '#/components/schemas/IdNamePairData'
+          nullable: true
+        handedOverDate:
+          type: string
+          format: date
+          nullable: true
+          example: null
+        handedOverPerson:
+          $ref: '#/components/schemas/IdNamePairData'
+          nullable: true
+        articleType:
+          $ref: '#/components/schemas/IdNamePairData'
+          nullable: true
+        visualAidType:
+          $ref: '#/components/schemas/IdNamePairData'
+          nullable: true
+        completedUntil:
+          type: string
+          format: date
+          nullable: true
+          example: null
+        completedDate:
+          type: string
+          format: date
+          nullable: true
+          example: null
+        otherText:
+          type: string
+          example: "Additional notes"
+        refractionData:
+          $ref: '#/components/schemas/RefractionShort'
+          nullable: true
+        invoices:
+          type: array
+          items:
+            type: object
+            properties:
+              number:
+                type: string
+                nullable: true
+                example: "INV12345"
+              date:
+                type: string
+                format: date
+                nullable: true
+                example: null
+              netType:
+                type: string
+                example: "undefined"
+                enum:
+                  - undefined
+                  - gross
+                  - nettoWithoutVat
+                  - nettoWithVat
+                  - nettoWithoutVatEu
+                  - nettoWithoutVatReverseCharge
+                  - nettoWithoutVatExport
+                  - nettoWithoutVatNato
+              vat0:
+                type: number
+                format: double
+                nullable: true
+                example: 0.0
+              vat1:
+                type: number
+                format: double
+                nullable: true
+                example: 19.0
+              recipientInvoice:
+                type: integer
+                nullable: true
+                example: 1001
+                description: "Customer ID of the invoice recipient"
+              recipientReminder:
+                type: integer
+                nullable: true
+                example: 1002
+                description: "Customer ID of the reminder recipient"
+              paymentMode:
+                type: string
+                enum:
+                  - undefined
+                  - invoice
+                  - installmentPayment
+                  - subscription
+              frame:
+                type: object
+                properties:
+                  brand:
+                    $ref: '#/components/schemas/IdNamePairData'
+                    nullable: true
+                  material:
+                    $ref: '#/components/schemas/IdNamePairData'
+                    nullable: true
+                  type:
+                    $ref: '#/components/schemas/IdNamePairData'
+                    nullable: true
+                  model:
+                    type: string
+                    nullable: true
+                    example: "Model123"
+                  color:
+                    type: string
+                    nullable: true
+                    example: "Black"
+                  size:
+                    type: string
+                    nullable: true
+                    example: "Medium"
+                  templeLength:
+                    type: integer
+                    nullable: true
+                    example: 140
+                  comment:
+                    type: string
+                    nullable: true
+                    example: "Special edition frame"
+                  isSample:
+                    type: boolean
+                    example: false
+                  isCustomerOwned:
+                    type: boolean
+                    example: false
+                  isInShop:
+                    type: boolean
+                    example: true
+                  stockNo:
+                    type: integer
+                    nullable: true
+                    example: 12345
+                  sellingPrice:
+                    type: number
+                    format: double
+                    nullable: true
+                    example: 199.99
+                  purchasePrice:
+                    type: number
+                    format: double
+                    nullable: true
+                    example: 99.99
+              lensRight:
+                $ref: '#/components/schemas/SpectacleLensSide'
+              lensLeft:
+                $ref: '#/components/schemas/SpectacleLensSide'
+              isCurrent:
+                type: boolean
+                example: true
+              otherItems:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 123
+                    text:
+                      type: string
+                    count:
+                      type: integer
+                      example: 10
+                    sellingUnitPrice:
+                      type: number
+                      format: double
+                      example: 19.99
+                      nullable: true
+                    productGroup:
+                      $ref: '#/components/schemas/IdNamePairData'
+                      nullable: true
+
+    MasterdataCrmCriteria:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        name:
+          type: string
+          example: "Hobby"
+        isActive:
+          type: boolean
+          example: true
+        color:
+          type: string
+          example: "#000000"
+        children:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 456
+              name:
+                type: string
+                example: "Segeln"
+              isActive:
+                type: boolean
+                example: true
+              color:
+                type: string
+                example: "#000000"
+
+  securitySchemes:
+    ApplicationKey:
+      in: header
+      type: apiKey
+      description: Authorisation by X-API-KEY in the header
+      name: X-API-KEY
+    SessionID:
+      in: header
+      type: apiKey
+      description: Session-ID
+      name: Session-ID
+
+paths:
+  /login:
+    post:
+      summary: "Login"
+      security:
+        - ApplicationKey: []
+      requestBody:
+        description: Zugangsdaten
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                password:
+                  type: string
+
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session_id:
+                    type: string
+        '400':
+          description: Bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: "error text"
+                example: "Username and password must be provided."
+
+  /logout:
+    get:
+      summary: "Logout"
+      security:
+        - ApplicationKey: []
+        - SessionID: []
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: "error text"
+                example: "No logout without given Session-ID."
+
+  /ping:
+    get:
+      summary: "Refresh a token"
+      security:
+        - ApplicationKey: []
+        - SessionID: []
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: "error text"
+                example: "Session not found."
+        '401':
+          description: Bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: "error text"
+                example: "Cannot access Endpoint ping."
+
+  /customer:
+    get:
+      summary: "Provides customer master data objects"
+      security:
+        - ApplicationKey: []
+        - SessionID: []
+      parameters:
+        - in: query
+          name: next
+          description: Pagination
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+        - in: query
+          name: pageSize
+          description: PageSize
+          schema:
+            type: integer
+            minimum: 1
+          example: 100
+        - in: query
+          name: lastChangedGreaterThan
+          description: "Only returns customers whose change date is greater than the query parameter"
+          schema:
+            type: string
+            format: date-time
+          example: "2024-06-15T14:34:14.68"
+        - in: query
+          name: firstname
+          description: "Firstname"
+          schema:
+            type: string
+          example: "John"
+        - in: query
+          name: lastname
+          description: "Lastname"
+          schema:
+            type: string
+          example: "Doe"
+        - in: query
+          name: crmcriteria
+          description: "Search for crmcriteria-ids (from /masterdata/crmcriteria)."
+          schema:
+            type: string
+          example: "3,4"
+        - in: query
+          name: onlyActive
+          description: "Only active"
+          schema:
+            type: string
+            enum:
+              - "true"
+              - "false"
+          example: "true"
+        - in: query
+          name: searchMode
+          description: "search mode"
+          schema:
+            type: string
+            enum:
+              - contains
+              - startsWith
+          example: "contains"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CustomerShort"
+                  pagination:
+                    type: object
+                    properties:
+                      linkNext:
+                        type: string
+                      pageSize:
+                        type: integer
+                        example: 2000
+    post:
+      description: 'new customer'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerNew"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 12
+                    description: Newly created customer id.
+          
+
+  /customer/{customer_id}:
+    parameters:
+      - in: path
+        name: customer_id
+        description: Customer ID
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        example: 1002
+    get:
+      summary: "get customer"
+      security:
+        - ApplicationKey: []
+        - SessionID: []
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        '423':
+          description: "Object is in use"
+        '404':
+          description: "Object not found"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "InternalError"
+
+  /refraction/{refraction_id}:
+    parameters:
+      - in: path
+        name: refraction_id
+        description: Refraction ID
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        example: 1002
+    get:
+      summary: "get refraction"
+      security:
+        - ApplicationKey: []
+        - SessionID: []
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Refraction"
+        '423':
+          description: "Object is in use"
+        '404':
+          description: "Object not found"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "InternalError"
+
+  /refraction:
+    parameters:
+      - in: query
+        name: customerId
+        description: Customer ID
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        example: 1002
+      - in: query
+        name: latestDataOnly
+        required: false
+        schema:
+          type: boolean
+          default: false
+        example: 1002
+    get:
+      summary: "get refraction short"
+      security:
+        - ApplicationKey: []
+        - SessionID: []
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RefractionShort"
+        '423':
+          description: "Object is in use"
+        '404':
+          description: "Object not found"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "InternalError"
+
+  /spectaclelens/{orderId}:
+    parameters:
+      - in: path
+        name: orderId
+        description: Order ID
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        example: 12345
+    get:
+      summary: "Get spectacle lens by order ID"
+      security:
+        - ApplicationKey: []
+        - SessionID: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SpectacleLens"
+        '404':
+          description: "Object not found"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "InternalError"
+
+  /spectaclelens:
+    parameters:
+      - in: query
+        name: customerId
+        description: Customer ID
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        example: 1002
+    get:
+      summary: "Get spectacle lenses by customer ID"
+      security:
+        - ApplicationKey: []
+        - SessionID: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SpectacleLensShort"
+        '404':
+          description: "Object not found"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "InternalError"
+
+  /masterdata/crmcriteria:
+    get:
+      summary: "Get a list of all CRM criteria."
+      security:
+        - ApplicationKey: []
+        - SessionID: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MasterdataCrmCriteria"
+        '404':
+          description: "Object not found"
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+        '500':
+          description: "InternalError"

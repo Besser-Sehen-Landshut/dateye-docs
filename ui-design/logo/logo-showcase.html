@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATEYE Logo Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .logo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .logo-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 1.3rem;
+        }
+        
+        .logo-display {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-display.dark {
+            background: #2d3748;
+        }
+        
+        .logo-display.small {
+            min-height: 60px;
+            padding: 1rem;
+        }
+        
+        .logo-info {
+            text-align: left;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .logo-info strong {
+            color: #333;
+        }
+        
+        .size-demo {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .color-specs {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .color-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .color-swatch {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .color-info {
+            flex: 1;
+        }
+        
+        .color-info strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        .color-info code {
+            background: #f0f0f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .usage-guide {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .responsive-demo {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .responsive-item {
+            text-align: center;
+        }
+        
+        .responsive-item span {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .responsive-demo {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DATEYE Logo System</h1>
+            <p>Vollständiges Logo-System für die medizinische Geräteintegrations-Plattform mit allen Varianten und Verwendungsrichtlinien.</p>
+        </div>
+
+        <div class="color-specs">
+            <h2>Farb-Spezifikationen</h2>
+            <div class="color-grid">
+                <div class="color-item">
+                    <div class="color-swatch" style="background: rgba(0,0,0,0.69);"></div>
+                    <div class="color-info">
+                        <strong>DAT Grau</strong>
+                        <code>fill-opacity: 0.69</code><br>
+                        <code>rgba(0,0,0,0.69)</code>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background: #0087ba;"></div>
+                    <div class="color-info">
+                        <strong>EYE Blau</strong>
+                        <code>#0087ba</code><br>
+                        <code>rgb(0,135,186)</code>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background: #16A34A;"></div>
+                    <div class="color-info">
+                        <strong>Aktiv/Erfolg</strong>
+                        <code>#16A34A</code><br>
+                        <code>Status-Indikator</code>
+                    </div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background: #EA580C;"></div>
+                    <div class="color-info">
+                        <strong>Export/Warnung</strong>
+                        <code>#EA580C</code><br>
+                        <code>Export-Aktionen</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="logo-grid">
+            <div class="logo-card">
+                <h3>Haupt-Logo</h3>
+                <div class="logo-display">
+                    <img src="dateye-main.svg" alt="DATEYE Haupt-Logo" style="height: 60px;">
+                </div>
+                <div class="logo-info">
+                    <strong>Datei:</strong> dateye-main.svg<br>
+                    <strong>ViewBox:</strong> 6642×2800 (2.37:1)<br>
+                    <strong>Verwendung:</strong> Header, Marketing, Dokumentation<br>
+                    <strong>Min. Breite:</strong> 120px
+                </div>
+                <div class="responsive-demo">
+                    <div class="responsive-item">
+                        <img src="dateye-main.svg" alt="Klein" style="width: 80px;">
+                        <span>80px</span>
+                    </div>
+                    <div class="responsive-item">
+                        <img src="dateye-main.svg" alt="Medium" style="width: 120px;">
+                        <span>120px</span>
+                    </div>
+                    <div class="responsive-item">
+                        <img src="dateye-main.svg" alt="Groß" style="width: 200px;">
+                        <span>200px</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="logo-card">
+                <h3>App-Icon</h3>
+                <div class="logo-display">
+                    <img src="dateye-icon.svg" alt="DATEYE App-Icon" style="width: 80px; height: 80px;">
+                </div>
+                <div class="logo-info">
+                    <strong>Datei:</strong> dateye-icon.svg<br>
+                    <strong>ViewBox:</strong> 256×256 (1:1)<br>
+                    <strong>Verwendung:</strong> Desktop-Icon, About-Dialoge<br>
+                    <strong>Optimiert für:</strong> 32px - 256px
+                </div>
+                <div class="size-demo">
+                    <img src="dateye-icon.svg" alt="32px" style="width: 32px; height: 32px;">
+                    <img src="dateye-icon.svg" alt="48px" style="width: 48px; height: 48px;">
+                    <img src="dateye-icon.svg" alt="64px" style="width: 64px; height: 64px;">
+                    <img src="dateye-icon.svg" alt="128px" style="width: 128px; height: 128px;">
+                </div>
+            </div>
+
+            <div class="logo-card">
+                <h3>System-Tray</h3>
+                <div class="logo-display small">
+                    <img src="dateye-tray.svg" alt="DATEYE System-Tray" style="width: 16px; height: 16px;">
+                    <img src="dateye-tray.svg" alt="DATEYE System-Tray" style="width: 24px; height: 24px; margin-left: 1rem;">
+                    <img src="dateye-tray.svg" alt="DATEYE System-Tray" style="width: 32px; height: 32px; margin-left: 1rem;">
+                </div>
+                <div class="logo-info">
+                    <strong>Datei:</strong> dateye-tray.svg<br>
+                    <strong>ViewBox:</strong> 16×16 (1:1)<br>
+                    <strong>Verwendung:</strong> System-Tray, Taskleiste<br>
+                    <strong>Optimiert für:</strong> 16px - 32px
+                </div>
+            </div>
+
+            <div class="logo-card">
+                <h3>Favicon</h3>
+                <div class="logo-display small">
+                    <img src="dateye-favicon.svg" alt="DATEYE Favicon" style="width: 16px; height: 16px;">
+                    <img src="dateye-favicon.svg" alt="DATEYE Favicon" style="width: 24px; height: 24px; margin-left: 1rem;">
+                    <img src="dateye-favicon.svg" alt="DATEYE Favicon" style="width: 32px; height: 32px; margin-left: 1rem;">
+                </div>
+                <div class="logo-info">
+                    <strong>Datei:</strong> dateye-favicon.svg<br>
+                    <strong>ViewBox:</strong> 32×32 (1:1)<br>
+                    <strong>Verwendung:</strong> Browser-Tabs, Lesezeichen<br>
+                    <strong>Besonderheit:</strong> Blauer Hintergrund für Kontrast
+                </div>
+            </div>
+
+            <div class="logo-card">
+                <h3>About-Dialog</h3>
+                <div class="logo-display">
+                    <img src="dateye-about.svg" alt="DATEYE About" style="height: 80px;">
+                </div>
+                <div class="logo-info">
+                    <strong>Datei:</strong> dateye-about.svg<br>
+                    <strong>ViewBox:</strong> 400×150<br>
+                    <strong>Verwendung:</strong> Info-Dialoge, Credits<br>
+                    <strong>Besonderheit:</strong> Mit Tagline und Copyright
+                </div>
+            </div>
+
+            <div class="logo-card">
+                <h3>Loading-Animation</h3>
+                <div class="logo-display">
+                    <img src="dateye-loading.svg" alt="DATEYE Loading" style="height: 60px;">
+                </div>
+                <div class="logo-info">
+                    <strong>Datei:</strong> dateye-loading.svg<br>
+                    <strong>ViewBox:</strong> 300×120<br>
+                    <strong>Verwendung:</strong> Splash-Screens, Lade-Zustände<br>
+                    <strong>Animation:</strong> DAT fade-in → EYE slide-in → Dots
+                </div>
+            </div>
+        </div>
+
+        <div class="usage-guide">
+            <h2>Verwendungsrichtlinien</h2>
+            
+            <h3>Hintergrund-Tests</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                <div style="background: #ffffff; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <img src="dateye-main.svg" alt="Auf Weiß" style="height: 40px;">
+                    <div style="margin-top: 0.5rem; font-size: 0.8rem;">Weiß - Optimal</div>
+                </div>
+                <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <img src="dateye-main.svg" alt="Auf Hellgrau" style="height: 40px;">
+                    <div style="margin-top: 0.5rem; font-size: 0.8rem;">Hellgrau - Gut</div>
+                </div>
+                <div style="background: #333333; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <img src="dateye-main.svg" alt="Auf Dunkel" style="height: 40px;">
+                    <div style="margin-top: 0.5rem; font-size: 0.8rem; color: white;">Dunkel - Angepasst nötig</div>
+                </div>
+                <div style="background: #0087ba; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <img src="dateye-main.svg" alt="Auf Blau" style="height: 40px;">
+                    <div style="margin-top: 0.5rem; font-size: 0.8rem; color: white;">Blau - Vermeiden</div>
+                </div>
+            </div>
+
+            <h3>Implementation Examples</h3>
+            <pre style="background: #f8f8f8; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.9rem;"><code>&lt;!-- HTML --&gt;
+&lt;img src="logo/dateye-main.svg" alt="DATEYE Logo" style="width: 200px; height: auto;"&gt;
+
+&lt;!-- Flutter --&gt;
+SvgPicture.asset(
+  'assets/logo/dateye-main.svg',
+  width: 200,
+  fit: BoxFit.contain,
+)
+
+&lt;!-- CSS --&gt;
+.logo {
+  background: url('dateye-main.svg') no-repeat center;
+  background-size: contain;
+  width: 200px;
+  height: 84px; /* 2.37:1 ratio */
+}</code></pre>
+
+            <h3>Responsive Breakpoints</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead style="background: #f5f5f5;">
+                        <tr>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Bildschirmbreite</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Logo-Variante</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Empfohlene Breite</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">&gt; 1200px</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">dateye-about.svg</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">200-300px</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">800-1200px</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">dateye-main.svg</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">140-200px</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">400-800px</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">dateye-main.svg</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">100-140px</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">&lt; 400px</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">dateye-icon.svg</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">40-60px</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

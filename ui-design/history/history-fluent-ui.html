@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATEYE - History</title>
+    <!-- Font Awesome 5 Free -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f3f3f3;
+            color: #1a1a1a;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Window Chrome */
+        .window {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: #ffffff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .titlebar {
+            height: 32px;
+            background: rgba(243, 243, 243, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 0;
+            -webkit-app-region: drag;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .titlebar-controls {
+            display: flex;
+            -webkit-app-region: no-drag;
+        }
+
+        .titlebar-button {
+            width: 46px;
+            height: 32px;
+            background: transparent;
+            border: none;
+            color: #1a1a1a;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.1s ease;
+        }
+
+        .titlebar-button:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .titlebar-button:active {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .titlebar-button.close:hover {
+            background: #e81123;
+            color: white;
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f9f9f9;
+            overflow: hidden;
+        }
+
+        /* Tab Navigation */
+        .tab-bar {
+            height: 56px;
+            background: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 0;
+        }
+        
+        .dateye-logo {
+            flex-shrink: 0;
+            margin-right: 40px;
+            margin-left: -25px;
+        }
+
+        .tab-item {
+            height: 40px;
+            padding: 0 20px;
+            margin: 0 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #5a5a5a;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .tab-item i {
+            font-size: 16px;
+        }
+
+        .tab-item .short-text {
+            display: none;
+        }
+
+        .tab-item:hover {
+            color: #1a1a1a;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .tab-item.active {
+            background: rgba(0, 135, 186, 0.1);
+            color: #0087ba;
+        }
+
+        .tab-item.active:hover {
+            background: rgba(0, 135, 186, 0.15);
+        }
+
+        /* Responsive Tab Navigation */
+        @media (max-width: 1100px) {
+            .dateye-logo {
+                width: 140px;
+                margin-right: 20px;
+            }
+            
+            .tab-item {
+                padding: 0 16px;
+            }
+            
+            .tab-item .full-text {
+                display: none;
+            }
+            
+            .tab-item .short-text {
+                display: inline;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tab-bar {
+                padding: 0 32px;
+            }
+            
+            .dateye-logo {
+                display: none;
+            }
+            
+            .tab-item {
+                padding: 0 14px;
+                gap: 0;
+                margin: 0 4px;
+            }
+            
+            .tab-item:first-of-type {
+                margin-left: -14px;
+            }
+            
+            .tab-item i {
+                display: none;
+            }
+            
+            .tab-item .full-text {
+                display: none;
+            }
+            
+            .tab-item .short-text {
+                display: inline;
+            }
+            
+            .tab-item {
+                font-size: 14px;
+            }
+        }
+
+        /* History Content */
+        .history-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 24px 32px 20px 32px;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .history-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .export-selected-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #0087ba;
+            color: white;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .export-selected-btn.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .export-selected-btn:hover.enabled {
+            background: #006a94;
+        }
+
+        /* Filters */
+        .filters-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 6px 12px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
+            cursor: pointer;
+            min-width: 140px;
+        }
+
+        .search-input {
+            padding: 6px 12px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
+            width: 240px;
+            flex-shrink: 0;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0087ba;
+            box-shadow: 0 0 0 2px rgba(0, 135, 186, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* Event List */
+        .event-list-container {
+            flex: 1;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .event-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .event-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .event-list::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+
+        .event-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Event Item */
+        .event-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .event-item:hover {
+            background: rgba(0, 135, 186, 0.02);
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-item.selected {
+            background: rgba(0, 135, 186, 0.08);
+            border-left: 3px solid #0087ba;
+            padding-left: 17px;
+        }
+
+        .event-checkbox {
+            width: 16px;
+            height: 16px;
+            margin-right: 16px;
+            margin-top: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .event-time {
+            font-size: 13px;
+            color: #6b7280;
+            min-width: 140px;
+            text-align: left;
+            flex-shrink: 0;
+            padding-top: 1px;
+            font-family: 'Segoe UI Mono', 'Consolas', monospace;
+        }
+
+        .event-content {
+            flex: 1;
+            min-width: 0;
+            margin-left: 16px;
+        }
+
+        .event-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .event-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .event-icon.import {
+            color: #0087ba;
+        }
+
+        .event-icon.export {
+            color: #ea580c;
+        }
+
+        .event-icon.error {
+            color: #dc2626;
+        }
+
+        .event-icon.success {
+            color: #16a34a;
+        }
+
+        .event-type {
+            font-size: 13px;
+            font-weight: 600;
+            color: #323130;
+        }
+
+        .event-main {
+            font-size: 14px;
+            color: #1a1a1a;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .event-details {
+            font-size: 12px;
+            color: #6b7280;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .event-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .event-detail-item i {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        .event-meta {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        /* Event Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .status-badge.success {
+            background: rgba(22, 163, 74, 0.1);
+            color: #16a34a;
+        }
+
+        .status-badge.error {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+        }
+
+        .status-badge.warning {
+            background: rgba(234, 88, 12, 0.1);
+            color: #ea580c;
+        }
+
+        .status-badge.pending {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+
+        /* Load More */
+        .load-more-container {
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            background: rgba(0, 0, 0, 0.01);
+        }
+
+        .load-more-btn {
+            padding: 8px 20px;
+            border: 1px solid rgba(0, 135, 186, 0.3);
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: #0087ba;
+        }
+
+        .load-more-btn:hover {
+            background: rgba(0, 135, 186, 0.05);
+            border-color: #0087ba;
+        }
+
+        .load-more-info {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        /* Simplified Footer */
+        .footer-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 12px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .status-info {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .version-info {
+            font-size: 13px;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 4px 8px;
+            margin: -4px -8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .version-info:hover {
+            background: rgba(0, 135, 186, 0.1);
+            color: #0087ba;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .history-content {
+                padding: 20px 24px 16px 24px;
+            }
+            
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-input {
+                width: 100%;
+            }
+            
+            .event-time {
+                min-width: 100px;
+                font-size: 12px;
+            }
+            
+            .event-details {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .history-content {
+                padding: 16px;
+            }
+            
+            .history-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .event-item {
+                padding: 12px 16px;
+            }
+            
+            .event-content {
+                margin-left: 12px;
+            }
+            
+            .event-time {
+                min-width: 80px;
+            }
+        }
+
+        /* Dialog Styles */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dialog-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dialog {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .dialog-overlay.show .dialog {
+            transform: scale(1);
+        }
+
+        .dialog-header {
+            padding: 24px 24px 0 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .dialog-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .dialog-content {
+            padding: 0 24px 24px 24px;
+        }
+
+        .dialog-actions {
+            padding: 16px 24px;
+            background: rgba(0, 0, 0, 0.02);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #0087ba;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #006a94;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #323130;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-help {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Selected Count */
+        .selected-count {
+            font-size: 12px;
+            color: #6b7280;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="window">
+        <!-- Title Bar -->
+        <div class="titlebar">
+            <div class="titlebar-controls">
+                <button class="titlebar-button">─</button>
+                <button class="titlebar-button">□</button>
+                <button class="titlebar-button close">✕</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Main Tab Navigation -->
+            <div class="tab-bar">
+                <!-- DATEYE Logo -->
+                <svg class="dateye-logo" width="180" height="36" viewBox="0 0 6642 2800">
+                    <path d="M1476.31,1686.1l-205.917,-0l-0,-702.75l200.291,-0c126.125,-0 259.542,24 259.542,350.625c0,326.625 -187.25,352.125 -253.917,352.125Zm367.584,-756.788c-108.334,-111.42 -189.084,-135.879 -400.667,-135.879l-391.5,0l0,1081.09l426.25,-0c180.917,-0 288.25,-45.792 376.125,-168.463c87.917,-122.625 108.333,-265.875 108.333,-372.083c0,-106.208 -10.208,-293.25 -118.541,-404.663Zm582.416,536.538l139.209,-419.375l134.541,419.375l-273.75,-0Zm269.042,-672.417l-255.875,0l-387.417,1081.09l238.625,-0l74.251,-223.671l394.458,-0l71.75,223.671l247.833,-0l-383.625,-1081.09Zm2942.81,0l-0,195.709l-2076.48,-0l0,885.379l-228.375,-0l0,-885.379l-321.416,-0l-0,-195.709l2626.27,0Z" style="fill-opacity:0.69;fill-rule:nonzero;"/>
+                    <path d="M4300.58,1745.31l0,129.209l-556.021,-0l0,-731.046l537.021,-0l0,129.167l-384.896,-0l0,157.5l354.105,-0l-0,129.166l-354.105,0l0,186.004l403.896,0Zm1352.21,0l-0,129.209l-556.084,-0l0,-731.046l537.084,-0l-0,129.167l-384.959,-0l0,157.5l354.125,-0l0,129.166l-354.125,0l0,186.004l403.959,0Zm-641.917,-601.837l-245.417,452l0,279.046l-152.125,-0l0,-279.046l-253.041,-452l178,-0l151.083,319.083l147.375,-319.083l174.125,-0Z" style="fill:#0087ba;fill-rule:nonzero;"/>
+                </svg>
+                
+                <div class="tab-item" onclick="handleMainTabClick('dashboard')" data-tooltip="Dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="tab-item" onclick="handleMainTabClick('connections')" data-tooltip="Connections">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span class="full-text">Connections</span>
+                    <span class="short-text">Connections</span>
+                </div>
+                <div class="tab-item active" onclick="handleMainTabClick('history')" data-tooltip="History">
+                    <i class="fas fa-list"></i>
+                    <span>History</span>
+                </div>
+                <div class="tab-item" onclick="handleMainTabClick('settings')" data-tooltip="Settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+
+            <!-- History Content -->
+            <div class="history-content">
+                <div class="history-header">
+                    <h2 class="history-title">
+                        <i class="fas fa-list"></i>
+                        All Activities
+                    </h2>
+                    <button class="export-selected-btn" id="exportSelectedBtn" onclick="showExportDialog()">
+                        <i class="fas fa-upload"></i>
+                        Export Selected
+                        <span class="selected-count" id="selectedCount">(0)</span>
+                    </button>
+                </div>
+
+                <div class="filters-row">
+                    <select class="filter-select" id="timeRangeFilter" onchange="applyFilters()">
+                        <option value="today">Today</option>
+                        <option value="7days" selected>Last 7 days</option>
+                        <option value="30days">Last 30 days</option>
+                        <option value="3months">Last 3 months</option>
+                        <option value="all">All time</option>
+                    </select>
+
+                    <select class="filter-select" id="typeFilter" onchange="applyFilters()">
+                        <option value="all">All Types</option>
+                        <option value="import">Import Only</option>
+                        <option value="export">Export Only</option>
+                        <option value="error">Errors Only</option>
+                        <option value="manual">Manual Operations</option>
+                        <option value="automatic">Automatic Operations</option>
+                    </select>
+
+                    <input type="text" class="search-input" placeholder="Search patient, file, or device..." id="searchInput" oninput="applyFilters()">
+                </div>
+
+                <div class="event-list-container">
+                    <div class="event-list" id="eventList">
+                        <!-- Event items will be populated by JavaScript -->
+                    </div>
+                    
+                    <div class="load-more-container">
+                        <div class="load-more-info">Showing 50 of 1,247 events</div>
+                        <button class="load-more-btn" onclick="loadMoreEvents()">Load More</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer-bar">
+                <div class="status-info">
+                    System running • Last sync: 2 min ago
+                </div>
+                
+                <div class="version-info">
+                    v2.0.0 ✓
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Selected Dialog -->
+    <div class="dialog-overlay" id="exportDialog">
+        <div class="dialog">
+            <div class="dialog-header">
+                <h3 class="dialog-title">Export Selected Events</h3>
+            </div>
+            <div class="dialog-content">
+                <div class="form-group">
+                    <label class="form-label">Export Target</label>
+                    <select class="form-select" id="exportTargetSelect">
+                        <option value="myopia_cloud">Myopia.cloud (FHIR)</option>
+                        <option value="al550">AL550 Biometer (JSON)</option>
+                        <option value="local_backup">Local Backup (JSON)</option>
+                        <option value="csv_export">CSV Export (Spreadsheet)</option>
+                        <option value="file_export">File Export (Choose Location)</option>
+                    </select>
+                    <div class="form-help">Choose where to export the selected patient data</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Selected Events</label>
+                    <div style="max-height: 200px; overflow-y: auto; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px; padding: 12px;">
+                        <div id="selectedEventsList">
+                            <!-- Selected events will be listed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-secondary" onclick="closeDialog('exportDialog')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmExport()">
+                    <i class="fas fa-upload"></i>
+                    Export Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample event data
+        const sampleEvents = [
+            {
+                id: 'evt_20240711_032',
+                timestamp: '2024-07-11T14:32:00Z',
+                type: 'import',
+                mode: 'automatic',
+                status: 'success',
+                adapter: 'topcon_myah',
+                file: 'Schmidt_Anna_2024.xml, Mueller_Hans.xml, Weber_Lisa.xml',
+                patientData: { names: ['Anna Schmidt', 'Hans Mueller', 'Lisa Weber'] },
+                measurementCount: 9,
+                duration: 2.3
+            },
+            {
+                id: 'evt_20240711_031',
+                timestamp: '2024-07-11T14:28:00Z',
+                type: 'export',
+                mode: 'automatic',
+                status: 'success',
+                adapter: 'mediworks_al550',
+                target: '192.168.1.100',
+                patientData: { names: ['Anna Schmidt', 'Hans Mueller'] },
+                measurementCount: 6
+            },
+            {
+                id: 'evt_20240711_030',
+                timestamp: '2024-07-11T14:15:00Z',
+                type: 'export',
+                mode: 'automatic',
+                status: 'error',
+                adapter: 'mediworks_al550',
+                target: '192.168.1.100',
+                error: 'Connection timeout',
+                retryCount: 1,
+                nextRetry: '2024-07-11T14:45:00Z'
+            },
+            {
+                id: 'evt_20240711_029',
+                timestamp: '2024-07-11T14:10:00Z',
+                type: 'import',
+                mode: 'automatic',
+                status: 'success',
+                adapter: 'eye_office_api',
+                patientData: { count: 15 },
+                duration: 8.7
+            },
+            {
+                id: 'evt_20240711_028',
+                timestamp: '2024-07-11T13:58:00Z',
+                type: 'import',
+                mode: 'manual',
+                status: 'success',
+                adapter: 'zeiss_iolmaster',
+                file: 'bilateral_exam_2024.dcm',
+                patientData: { names: ['Lisa Meyer'] },
+                measurementCount: 4
+            },
+            {
+                id: 'evt_20240711_027',
+                timestamp: '2024-07-11T13:45:00Z',
+                type: 'import',
+                mode: 'automatic',
+                status: 'error',
+                adapter: 'unknown',
+                file: 'measurement_2024.dat, calibration.dat, settings.dat',
+                error: 'Unknown file format',
+                retryCount: 0
+            },
+            {
+                id: 'evt_20240711_026',
+                timestamp: '2024-07-11T13:40:00Z',
+                type: 'import',
+                mode: 'automatic',
+                status: 'success',
+                adapter: 'eye_office',
+                file: 'refraction_batch_20240711.json, visual_acuity_batch_20240711.json',
+                patientData: { count: 8 },
+                measurementCount: 24
+            },
+            {
+                id: 'evt_20240711_025',
+                timestamp: '2024-07-11T13:35:00Z',
+                type: 'export',
+                mode: 'automatic',
+                status: 'success',
+                adapter: 'myopia_cloud',
+                target: 'api.myopia.cloud',
+                patientData: { names: ['Anna Schmidt', 'Lisa Weber', 'Tom Fischer'] },
+                format: 'FHIR'
+            },
+            {
+                id: 'evt_20240711_024',
+                timestamp: '2024-07-11T13:30:00Z',
+                type: 'import',
+                mode: 'automatic',
+                status: 'success',
+                adapter: 'mediworks_al550',
+                file: 'Mueller_Hans_20240711.json',
+                patientData: { names: ['Hans Mueller'] },
+                measurementCount: 3
+            },
+            {
+                id: 'evt_20240710_120',
+                timestamp: '2024-07-10T16:45:00Z',
+                type: 'export',
+                mode: 'manual',
+                status: 'success',
+                adapter: 'local_backup',
+                target: 'C:\\DATEYE\\Backup',
+                patientData: { count: 25 },
+                format: 'JSON'
+            }
+        ];
+
+        let selectedEvents = new Set();
+        let displayedEvents = sampleEvents.slice(0, 10);
+        let filteredEvents = [...displayedEvents];
+
+        // Handle main tab clicks
+        function handleMainTabClick(tab) {
+            console.log(`Switching to ${tab}`);
+            
+            // Update active tab
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.tab-item').classList.add('active');
+            
+            // In real app, would change content based on tab
+            if (tab === 'dashboard') {
+                console.log('Show Dashboard');
+            } else if (tab === 'connections') {
+                console.log('Show Connections screen');
+            } else if (tab === 'history') {
+                console.log('Show History screen');
+            } else if (tab === 'settings') {
+                console.log('Show Settings screen');
+            }
+        }
+
+        // Render event list
+        function renderEventList() {
+            const eventListElement = document.getElementById('eventList');
+            
+            eventListElement.innerHTML = filteredEvents.map(event => {
+                const isSelected = selectedEvents.has(event.id);
+                const timestamp = new Date(event.timestamp);
+                const timeStr = timestamp.toLocaleDateString() + ' ' + timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                // Determine icon and class
+                let iconClass = '';
+                let statusClass = '';
+                if (event.status === 'error') {
+                    iconClass = 'fas fa-exclamation-circle';
+                    statusClass = 'error';
+                } else if (event.type === 'import') {
+                    iconClass = 'fas fa-download';
+                    statusClass = 'import';
+                } else if (event.type === 'export') {
+                    iconClass = 'fas fa-upload';
+                    statusClass = 'export';
+                }
+
+                // Build content
+                let content = '';
+                if (event.type === 'import') {
+                    if (event.file) {
+                        content = `${getAdapterDisplayName(event.adapter)} - ${event.file}`;
+                    } else if (event.patientData?.count) {
+                        content = `${getAdapterDisplayName(event.adapter)} - ${event.patientData.count} patients synced`;
+                    }
+                } else if (event.type === 'export') {
+                    if (event.patientData?.names) {
+                        content = `${getAdapterDisplayName(event.adapter)} - ${event.patientData.names.join(', ')}`;
+                    } else if (event.patientData?.count) {
+                        content = `${getAdapterDisplayName(event.adapter)} - ${event.patientData.count} patients`;
+                    }
+                }
+
+                // Build details
+                const details = [];
+                if (event.patientData?.names) {
+                    details.push(`<span class="event-detail-item"><i class="fas fa-users"></i> ${event.patientData.names.length} patient${event.patientData.names.length > 1 ? 's' : ''}</span>`);
+                } else if (event.patientData?.count) {
+                    details.push(`<span class="event-detail-item"><i class="fas fa-users"></i> ${event.patientData.count} patients</span>`);
+                }
+                
+                if (event.measurementCount) {
+                    details.push(`<span class="event-detail-item"><i class="fas fa-ruler"></i> ${event.measurementCount} measurements</span>`);
+                }
+                
+                if (event.duration) {
+                    details.push(`<span class="event-detail-item"><i class="fas fa-clock"></i> ${event.duration}s</span>`);
+                }
+                
+                if (event.target) {
+                    details.push(`<span class="event-detail-item"><i class="fas fa-plug"></i> ${event.target}</span>`);
+                }
+                
+                if (event.format) {
+                    details.push(`<span class="event-detail-item"><i class="fas fa-file-code"></i> ${event.format}</span>`);
+                }
+
+                // Build status badge
+                let statusBadge = '';
+                if (event.status === 'error') {
+                    statusBadge = `<span class="status-badge error"><i class="fas fa-exclamation-circle"></i> ${event.error}</span>`;
+                    if (event.retryCount > 0) {
+                        details.push(`<span class="event-detail-item"><i class="fas fa-redo"></i> Retry ${event.retryCount}/3</span>`);
+                    }
+                } else if (event.status === 'success') {
+                    statusBadge = `<span class="status-badge success"><i class="fas fa-check-circle"></i> ${getStatusText(event)}</span>`;
+                }
+
+                return `
+                    <div class="event-item ${isSelected ? 'selected' : ''}" data-event-id="${event.id}">
+                        <input type="checkbox" class="event-checkbox" ${isSelected ? 'checked' : ''} 
+                               onchange="toggleEventSelection('${event.id}')">
+                        <div class="event-time">[${timeStr}]</div>
+                        <div class="event-content">
+                            <div class="event-header">
+                                <div class="event-icon ${statusClass}">
+                                    <i class="${iconClass}"></i>
+                                </div>
+                                <span class="event-type">${event.type === 'import' ? 'Import' : 'Export'}</span>
+                                ${statusBadge}
+                            </div>
+                            <div class="event-main">${content}</div>
+                            ${details.length > 0 ? `<div class="event-details">${details.join('')}</div>` : ''}
+                            <div class="event-meta">
+                                ID: ${event.id} • ${event.mode === 'automatic' ? 'Auto' : 'Manual'} ${event.type}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            updateSelectedCountDisplay();
+        }
+
+        // Helper functions
+        function getAdapterDisplayName(adapter) {
+            const names = {
+                'topcon_myah': 'Topcon MYAH',
+                'mediworks_al550': 'AL550',
+                'eye_office_api': 'Eye-Office API',
+                'eye_office': 'Eye-Office',
+                'zeiss_iolmaster': 'ZEISS IOLMaster',
+                'myopia_cloud': 'Myopia.cloud',
+                'local_backup': 'Local Backup',
+                'unknown': 'Unknown format'
+            };
+            return names[adapter] || adapter;
+        }
+
+        function getStatusText(event) {
+            if (event.type === 'import') {
+                return 'Imported';
+            } else if (event.type === 'export') {
+                return 'Exported';
+            }
+            return 'Completed';
+        }
+
+        // Event selection
+        function toggleEventSelection(eventId) {
+            if (selectedEvents.has(eventId)) {
+                selectedEvents.delete(eventId);
+            } else {
+                selectedEvents.add(eventId);
+            }
+            
+            updateSelectedCountDisplay();
+            renderEventList(); // Re-render to update selection styles
+        }
+
+        function updateSelectedCountDisplay() {
+            const count = selectedEvents.size;
+            const exportBtn = document.getElementById('exportSelectedBtn');
+            const selectedCount = document.getElementById('selectedCount');
+            
+            selectedCount.textContent = `(${count})`;
+            
+            if (count > 0) {
+                exportBtn.classList.add('enabled');
+            } else {
+                exportBtn.classList.remove('enabled');
+            }
+        }
+
+        // Filtering
+        function applyFilters() {
+            const timeRange = document.getElementById('timeRangeFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredEvents = displayedEvents.filter(event => {
+                // Time filter
+                const eventTime = new Date(event.timestamp);
+                const now = new Date();
+                const daysDiff = (now - eventTime) / (1000 * 60 * 60 * 24);
+                
+                let timeMatch = true;
+                if (timeRange === 'today' && daysDiff > 1) timeMatch = false;
+                if (timeRange === '7days' && daysDiff > 7) timeMatch = false;
+                if (timeRange === '30days' && daysDiff > 30) timeMatch = false;
+                if (timeRange === '3months' && daysDiff > 90) timeMatch = false;
+                
+                // Type filter
+                let typeMatch = true;
+                if (typeFilter === 'import' && event.type !== 'import') typeMatch = false;
+                if (typeFilter === 'export' && event.type !== 'export') typeMatch = false;
+                if (typeFilter === 'error' && event.status !== 'error') typeMatch = false;
+                if (typeFilter === 'manual' && event.mode !== 'manual') typeMatch = false;
+                if (typeFilter === 'automatic' && event.mode !== 'automatic') typeMatch = false;
+                
+                // Search filter
+                let searchMatch = true;
+                if (searchQuery) {
+                    const searchableText = [
+                        event.file || '',
+                        event.error || '',
+                        getAdapterDisplayName(event.adapter),
+                        event.patientData?.names?.join(' ') || '',
+                        event.target || ''
+                    ].join(' ').toLowerCase();
+                    
+                    searchMatch = searchableText.includes(searchQuery);
+                }
+                
+                return timeMatch && typeMatch && searchMatch;
+            });
+            
+            renderEventList();
+        }
+
+        // Export functionality
+        function showExportDialog() {
+            if (selectedEvents.size === 0) return;
+            
+            // Populate selected events in dialog
+            const selectedEventsList = document.getElementById('selectedEventsList');
+            const selectedEventData = filteredEvents.filter(event => selectedEvents.has(event.id));
+            
+            selectedEventsList.innerHTML = selectedEventData.map(event => {
+                const timestamp = new Date(event.timestamp).toLocaleDateString();
+                let description = '';
+                
+                if (event.patientData?.names) {
+                    description = event.patientData.names.join(', ');
+                } else if (event.patientData?.count) {
+                    description = `${event.patientData.count} patients`;
+                } else if (event.file) {
+                    description = event.file.split(', ')[0] + (event.file.includes(',') ? '...' : '');
+                }
+                
+                return `
+                    <div style="padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                        <div style="font-weight: 500; font-size: 13px;">${timestamp} - ${getAdapterDisplayName(event.adapter)}</div>
+                        <div style="font-size: 12px; color: #6b7280;">${description}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            showDialog('exportDialog');
+        }
+
+        function confirmExport() {
+            const target = document.getElementById('exportTargetSelect').value;
+            console.log(`Exporting ${selectedEvents.size} events to ${target}`);
+            
+            // Clear selection
+            selectedEvents.clear();
+            updateSelectedCountDisplay();
+            renderEventList();
+            
+            closeDialog('exportDialog');
+            
+            // Show success message (in real app)
+            console.log('Export initiated successfully');
+        }
+
+        // Load more events
+        function loadMoreEvents() {
+            console.log('Loading more events...');
+            // In real app, would load next batch from server
+        }
+
+        // Dialog functions
+        function showDialog(dialogId) {
+            const dialog = document.getElementById(dialogId);
+            dialog.classList.add('show');
+        }
+
+        function closeDialog(dialogId) {
+            const dialog = document.getElementById(dialogId);
+            dialog.classList.remove('show');
+        }
+
+        // Close dialog on overlay click
+        document.querySelectorAll('.dialog-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+
+        // Initialize
+        renderEventList();
+        
+        // Add some entrance animations
+        setTimeout(() => {
+            document.querySelectorAll('.event-item').forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-10px)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.2s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 20 * index);
+            });
+        }, 100);
+
+        console.log('History screen loaded');
+    </script>
+</body>
+</html>

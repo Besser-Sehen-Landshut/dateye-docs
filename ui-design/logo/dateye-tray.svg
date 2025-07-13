@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="16" height="16" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  
+  <!-- System Tray Icon - Simplified "D" with blue accent -->
+  <!-- Monochrome friendly for different tray themes -->
+  
+  <!-- Main "D" shape in dark gray -->
+  <path d="M2,1 L2,15 L8.5,15 C12.5,15 14.5,12 14.5,8 C14.5,4 12.5,1 8.5,1 L2,1 Z M4,3 L8.5,3 C11,3 12.5,5 12.5,8 C12.5,11 11,13 8.5,13 L4,13 L4,3 Z" style="fill:#333333;fill-rule:nonzero;"/>
+  
+  <!-- Blue accent dot representing "EYE" -->
+  <circle cx="8.5" cy="8" r="1.5" style="fill:#0087ba;"/>
+  
+  <!-- Alternative for pure monochrome systems (hidden by default) -->
+  <g style="display:none;" class="monochrome-fallback">
+    <path d="M2,1 L2,15 L8.5,15 C12.5,15 14.5,12 14.5,8 C14.5,4 12.5,1 8.5,1 L2,1 Z M4,3 L8.5,3 C11,3 12.5,5 12.5,8 C12.5,11 11,13 8.5,13 L4,13 L4,3 Z" style="fill:#000000;fill-rule:nonzero;"/>
+  </g>
+  
+</svg>

@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATEYE - Dashboard (Minimal)</title>
+    <!-- Font Awesome 5 Free -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f3f3f3;
+            color: #1a1a1a;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Window Chrome */
+        .window {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: #ffffff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .titlebar {
+            height: 32px;
+            background: rgba(243, 243, 243, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 0;
+            -webkit-app-region: drag;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .titlebar-controls {
+            display: flex;
+            -webkit-app-region: no-drag;
+        }
+
+        .titlebar-button {
+            width: 46px;
+            height: 32px;
+            background: transparent;
+            border: none;
+            color: #1a1a1a;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.1s ease;
+        }
+
+        .titlebar-button:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .titlebar-button:active {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .titlebar-button.close:hover {
+            background: #e81123;
+            color: white;
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f9f9f9;
+            overflow: hidden;
+        }
+
+        /* Tab Navigation */
+        .tab-bar {
+            height: 56px;
+            background: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 0;
+        }
+        
+        .dateye-logo {
+            flex-shrink: 0;
+            margin-right: 40px;
+            margin-left: -25px;
+        }
+
+        .tab-item {
+            height: 40px;
+            padding: 0 20px;
+            margin: 0 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #5a5a5a;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .tab-item i {
+            font-size: 16px;
+        }
+
+        .tab-item .short-text {
+            display: none;
+        }
+
+        .tab-item:hover {
+            color: #1a1a1a;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .tab-item.active {
+            background: rgba(0, 135, 186, 0.1);
+            color: #0087ba;
+        }
+
+        .tab-item.active:hover {
+            background: rgba(0, 135, 186, 0.15);
+        }
+
+        /* Responsive Tab Navigation */
+        @media (max-width: 1100px) {
+            .dateye-logo {
+                width: 140px;
+                margin-right: 20px;
+            }
+            
+            .tab-item {
+                padding: 0 16px;
+            }
+            
+            .tab-item .full-text {
+                display: none;
+            }
+            
+            .tab-item .short-text {
+                display: inline;
+            }
+            
+            /* No need for ::after - just use short-text directly */
+        }
+
+        @media (max-width: 768px) {
+            .tab-bar {
+                padding: 0 32px;
+            }
+            
+            .dateye-logo {
+                display: none;
+            }
+            
+            .tab-item {
+                padding: 0 14px;
+                gap: 0;
+                margin: 0 4px;
+            }
+            
+            .tab-item:first-of-type {
+                margin-left: -14px; /* Align with content */
+            }
+            
+            /* Show only text, hide icons on mobile */
+            .tab-item i {
+                display: none;
+            }
+            
+            /* Use shorter text for Import on mobile too */
+            .tab-item .full-text {
+                display: none;
+            }
+            
+            .tab-item .short-text {
+                display: inline;
+            }
+            
+            /* Adjust font size for mobile */
+            .tab-item {
+                font-size: 14px;
+            }
+        }
+
+        /* Activity Section - Full height */
+        .activity-section {
+            flex: 1;
+            padding: 24px 32px 20px 32px;
+            overflow-y: hidden;
+            background: #f9f9f9;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .activity-timeline {
+            position: relative;
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 8px;
+            min-height: 0;
+        }
+        
+        .activity-timeline::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .activity-timeline::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .activity-timeline::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+        
+        .activity-timeline::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .activity-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+        }
+
+        .activity-stats {
+            font-size: 14px;
+            font-weight: 400;
+            color: #6b7280;
+        }
+
+        @media (max-width: 1200px) {
+            .activity-stats {
+                display: none;
+            }
+        }
+
+        .activity-filter {
+            display: flex;
+            gap: 6px;
+        }
+
+        .filter-chip {
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .filter-count {
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .filter-chip.active .filter-count {
+            opacity: 1;
+        }
+
+        .filter-chip:hover {
+            background: white;
+            border-color: rgba(0, 135, 186, 0.3);
+            color: #0087ba;
+        }
+
+        .filter-chip.active {
+            background: #0087ba;
+            color: white;
+            border-color: #0087ba;
+        }
+
+        /* Activity Cards */
+        .activity-card {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+            padding: 14px 20px;
+            margin-bottom: 6px;
+            position: relative;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 135, 186, 0.2);
+        }
+
+        /* Active process - subtle highlighting */
+        .activity-card.active-process {
+            background: rgba(0, 135, 186, 0.08);
+            border-color: rgba(0, 135, 186, 0.3);
+        }
+
+        .activity-card.import { 
+            --activity-color: #0087BA; 
+        }
+        .activity-card.export { 
+            --activity-color: #EA580C; 
+        }
+        .activity-card.error { 
+            --activity-color: #DC2626; 
+        }
+
+        .activity-time {
+            font-size: 13px;
+            color: #6b7280;
+            min-width: 80px;
+            text-align: left;
+            flex-shrink: 0;
+            padding-top: 2px;
+            font-family: 'Segoe UI Mono', 'Consolas', monospace;
+        }
+
+        .activity-time.now {
+            color: #0087ba;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .activity-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .activity-header-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .activity-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--activity-color);
+        }
+
+        .activity-icon.active {
+            animation: subtlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.7;
+                transform: scale(0.95);
+            }
+        }
+
+        .activity-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #323130;
+        }
+
+        .activity-content {
+            font-size: 14px;
+            color: #323130;
+            line-height: 1.5;
+        }
+
+        .activity-details {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 2px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .activity-detail-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .activity-detail-item i {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        /* Progress dots animation */
+        .progress-dots {
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .progress-dots span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #0087ba;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .progress-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .progress-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .progress-dots span:nth-child(3) { animation-delay: 0; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { 
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Simplified Footer */
+        .footer-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 12px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .status-info {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .version-info {
+            font-size: 13px;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 4px 8px;
+            margin: -4px -8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .version-info:hover {
+            background: rgba(0, 135, 186, 0.1);
+            color: #0087ba;
+        }
+
+        .version-update {
+            color: #DC2626;
+            font-weight: 600;
+        }
+
+        /* Dialog Styles */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dialog-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dialog {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            max-width: 400px;
+            width: 90%;
+            padding: 24px;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .dialog-overlay.show .dialog {
+            transform: scale(1);
+        }
+
+        .dialog-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .dialog-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #323130;
+            margin-bottom: 24px;
+        }
+
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .dialog-button {
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .dialog-button.primary {
+            background: #0087ba;
+            color: white;
+        }
+
+        .dialog-button.primary:hover {
+            background: #006a94;
+        }
+
+        .dialog-button.secondary {
+            background: #f3f4f6;
+            color: #323130;
+        }
+
+        .dialog-button.secondary:hover {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="window">
+        <!-- Title Bar -->
+        <div class="titlebar">
+            <div class="titlebar-controls">
+                <button class="titlebar-button">─</button>
+                <button class="titlebar-button">□</button>
+                <button class="titlebar-button close">✕</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Tab Navigation with Logo -->
+            <div class="tab-bar">
+                <!-- DATEYE Logo -->
+                <svg class="dateye-logo" width="180" height="36" viewBox="0 0 6642 2800">
+                    <path d="M1476.31,1686.1l-205.917,-0l-0,-702.75l200.291,-0c126.125,-0 259.542,24 259.542,350.625c0,326.625 -187.25,352.125 -253.917,352.125Zm367.584,-756.788c-108.334,-111.42 -189.084,-135.879 -400.667,-135.879l-391.5,0l0,1081.09l426.25,-0c180.917,-0 288.25,-45.792 376.125,-168.463c87.917,-122.625 108.333,-265.875 108.333,-372.083c0,-106.208 -10.208,-293.25 -118.541,-404.663Zm582.416,536.538l139.209,-419.375l134.541,419.375l-273.75,-0Zm269.042,-672.417l-255.875,0l-387.417,1081.09l238.625,-0l74.251,-223.671l394.458,-0l71.75,223.671l247.833,-0l-383.625,-1081.09Zm2942.81,0l-0,195.709l-2076.48,-0l0,885.379l-228.375,-0l0,-885.379l-321.416,-0l-0,-195.709l2626.27,0Z" style="fill-opacity:0.69;fill-rule:nonzero;"/>
+                    <path d="M4300.58,1745.31l0,129.209l-556.021,-0l0,-731.046l537.021,-0l0,129.167l-384.896,-0l0,157.5l354.105,-0l-0,129.166l-354.105,0l0,186.004l403.896,0Zm1352.21,0l-0,129.209l-556.084,-0l0,-731.046l537.084,-0l-0,129.167l-384.959,-0l0,157.5l354.125,-0l0,129.166l-354.125,0l0,186.004l403.959,0Zm-641.917,-601.837l-245.417,452l0,279.046l-152.125,-0l0,-279.046l-253.041,-452l178,-0l151.083,319.083l147.375,-319.083l174.125,-0Z" style="fill:#0087ba;fill-rule:nonzero;"/>
+                </svg>
+                
+                <div class="tab-item active" onclick="handleTabClick('dashboard')" data-tooltip="Dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="tab-item" onclick="handleTabClick('connections')" data-tooltip="Connections">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span class="full-text">Connections</span>
+                    <span class="short-text">Connections</span>
+                </div>
+                <div class="tab-item" onclick="handleTabClick('history')" data-tooltip="History">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </div>
+                <div class="tab-item" onclick="handleTabClick('settings')" data-tooltip="Settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+            
+            <!-- Activity Section -->
+            <div class="activity-section">
+                <div class="activity-header">
+                    <h2 class="activity-title">
+                        Today's Activity
+                        <span class="activity-stats" id="activityStats">12 imports • 8 exports • 2 errors</span>
+                    </h2>
+                    <div class="activity-filter">
+                        <div class="filter-chip active" data-filter="all">All <span class="filter-count">(22)</span></div>
+                        <div class="filter-chip" data-filter="import">Import <span class="filter-count">(12)</span></div>
+                        <div class="filter-chip" data-filter="export">Export <span class="filter-count">(8)</span></div>
+                        <div class="filter-chip" data-filter="errors">Errors <span class="filter-count">(2)</span></div>
+                    </div>
+                </div>
+                
+                <div class="activity-timeline">
+                    <!-- Active Process - Subtle -->
+                    <div class="activity-card import active-process" id="activeProcess" style="display: none;">
+                        <div class="activity-time now">[NOW]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon active" id="activeIcon"><i class="fas fa-download"></i></div>
+                                <span class="activity-label" id="activeLabel">Importing</span>
+                            </div>
+                            <div class="activity-content">
+                                <span id="activeContent">Topcon MYAH (2/3 files)</span>
+                                <span class="progress-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regular Activity Cards -->
+                    <div class="activity-card import">
+                        <div class="activity-time">[14:32]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-download"></i></div>
+                                <span class="activity-label">Import</span>
+                            </div>
+                            <div class="activity-content">
+                                Topcon MYAH - Schmidt_Anna_2024.xml, Mueller_Hans.xml, Weber_Lisa.xml
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-folder"></i> 3 files</span>
+                                <span class="activity-detail-item"><i class="fas fa-clock"></i> 2.3s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card export">
+                        <div class="activity-time">[14:28]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-upload"></i></div>
+                                <span class="activity-label">Export</span>
+                            </div>
+                            <div class="activity-content">
+                                AL550 - Anna Schmidt, Hans Mueller
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-users"></i> 2 patients</span>
+                                <span class="activity-detail-item"><i class="fas fa-plug"></i> 192.168.1.100</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card error">
+                        <div class="activity-time">[14:15]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-exclamation-circle"></i></div>
+                                <span class="activity-label">Export failed</span>
+                            </div>
+                            <div class="activity-content">
+                                AL550 - Connection timeout (Retry 1/3)
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-exclamation-triangle"></i> Timeout</span>
+                                <span class="activity-detail-item"><i class="fas fa-redo"></i> Retry in 2m</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card import">
+                        <div class="activity-time">[14:10]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-download"></i></div>
+                                <span class="activity-label">Import</span>
+                            </div>
+                            <div class="activity-content">
+                                Eye-Office API - 15 patients synced
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-users"></i> 15 patients</span>
+                                <span class="activity-detail-item"><i class="fas fa-sync"></i> API sync</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card export">
+                        <div class="activity-time">[14:05]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-upload"></i></div>
+                                <span class="activity-label">Export</span>
+                            </div>
+                            <div class="activity-content">
+                                Eye-Office - Weber_Klaus.json, Meyer_Lisa.json, Fischer_Eva.json, Braun_Tom.json, Schmidt_Paul.json
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-users"></i> 5 patients</span>
+                                <span class="activity-detail-item"><i class="fas fa-check-circle"></i> Completed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card import">
+                        <div class="activity-time">[13:58]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-download"></i></div>
+                                <span class="activity-label">Import</span>
+                            </div>
+                            <div class="activity-content">
+                                ZEISS IOLMaster - bilateral_exam_2024.dcm
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-ruler"></i> Biometry</span>
+                                <span class="activity-detail-item"><i class="fas fa-file"></i> DICOM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card error">
+                        <div class="activity-time">[13:45]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-exclamation-circle"></i></div>
+                                <span class="activity-label">Import error</span>
+                            </div>
+                            <div class="activity-content">
+                                Unknown format - measurement_2024.dat, calibration.dat, settings.dat
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-exclamation-triangle"></i> Format not recognized</span>
+                                <span class="activity-detail-item"><i class="fas fa-folder"></i> 3 files skipped</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card import">
+                        <div class="activity-time">[13:40]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-download"></i></div>
+                                <span class="activity-label">Import</span>
+                            </div>
+                            <div class="activity-content">
+                                Eye-Office - refraction_batch_20240711.json, visual_acuity_batch_20240711.json
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-users"></i> 8 patients</span>
+                                <span class="activity-detail-item"><i class="fas fa-glasses"></i> Refraction data</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card export">
+                        <div class="activity-time">[13:35]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-upload"></i></div>
+                                <span class="activity-label">Export</span>
+                            </div>
+                            <div class="activity-content">
+                                Myopia.cloud - Anna Schmidt, Lisa Weber, Tom Fischer
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-cloud"></i> Cloud sync</span>
+                                <span class="activity-detail-item"><i class="fas fa-check-circle"></i> FHIR format</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card import">
+                        <div class="activity-time">[13:30]</div>
+                        <div class="activity-main">
+                            <div class="activity-header-row">
+                                <div class="activity-icon"><i class="fas fa-download"></i></div>
+                                <span class="activity-label">Import</span>
+                            </div>
+                            <div class="activity-content">
+                                AL550 - Mueller_Hans_20240711.json
+                            </div>
+                            <div class="activity-details">
+                                <span class="activity-detail-item"><i class="fas fa-user"></i> Hans Mueller</span>
+                                <span class="activity-detail-item"><i class="fas fa-ruler"></i> Axial length: 24.52mm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simplified Footer -->
+            <div class="footer-bar">
+                <div class="status-info">
+                    System running • Last sync: 2 min ago
+                </div>
+                
+                <div class="version-info" id="versionInfo" onclick="handleVersionClick()">
+                    <span>v2.0.0 ✓</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialogs -->
+    <div class="dialog-overlay" id="updateDialog">
+        <div class="dialog">
+            <h3 class="dialog-title">Update Available</h3>
+            <div class="dialog-content">
+                <p>DATEYE v2.0.1 is available with the following improvements:</p>
+                <ul style="margin-top: 12px; padding-left: 20px;">
+                    <li>Improved AL550 connection stability</li>
+                    <li>Faster Eye-Office API sync</li>
+                    <li>Fixed import errors for special characters</li>
+                    <li>Enhanced memory usage</li>
+                </ul>
+            </div>
+            <div class="dialog-actions">
+                <button class="dialog-button secondary" onclick="closeDialog('updateDialog')">Later</button>
+                <button class="dialog-button primary" onclick="installUpdate()">Install Update</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dialog-overlay" id="aboutDialog">
+        <div class="dialog">
+            <h3 class="dialog-title">About DATEYE</h3>
+            <div class="dialog-content">
+                <p><strong>DATEYE v2.0.0</strong></p>
+                <p style="margin-top: 8px;">Medical Device Integration Platform</p>
+                <p style="margin-top: 16px; color: #6b7280;">© 2024 DATEYE · MIT License</p>
+                <p style="margin-top: 8px; color: #6b7280;">Making medical device integration stupidly simple.</p>
+            </div>
+            <div class="dialog-actions">
+                <button class="dialog-button primary" onclick="closeDialog('aboutDialog')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle tab clicks
+        function handleTabClick(tab) {
+            console.log(`Switching to ${tab}`);
+            
+            // Update active tab
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // In real app, would change content based on tab
+            if (tab === 'connections') {
+                console.log('Show Connections screen');
+            } else if (tab === 'history') {
+                console.log('Show History screen');
+            } else if (tab === 'settings') {
+                console.log('Show Settings screen');
+            }
+        }
+
+        // Count activities by type
+        function updateActivityCounts() {
+            const cards = document.querySelectorAll('.activity-card:not(#activeProcess)');
+            let importCount = 0;
+            let exportCount = 0;
+            let errorCount = 0;
+            
+            cards.forEach(card => {
+                if (card.classList.contains('error')) {
+                    errorCount++;
+                } else if (card.classList.contains('import')) {
+                    importCount++;
+                } else if (card.classList.contains('export')) {
+                    exportCount++;
+                }
+            });
+            
+            const totalCount = cards.length;
+            
+            // Update filter counts
+            document.querySelector('[data-filter="all"] .filter-count').textContent = `(${totalCount})`;
+            document.querySelector('[data-filter="import"] .filter-count').textContent = `(${importCount})`;
+            document.querySelector('[data-filter="export"] .filter-count').textContent = `(${exportCount})`;
+            document.querySelector('[data-filter="errors"] .filter-count').textContent = `(${errorCount})`;
+            
+            // Update header stats
+            document.getElementById('activityStats').textContent = 
+                `${importCount} imports • ${exportCount} exports • ${errorCount} errors`;
+        }
+
+        // Filter functionality
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                // Remove active from all
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                // Add active to clicked
+                chip.classList.add('active');
+                
+                // Filter logic
+                const filter = chip.getAttribute('data-filter');
+                document.querySelectorAll('.activity-card').forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = '';
+                    } else if (filter === 'errors' && card.classList.contains('error')) {
+                        card.style.display = '';
+                    } else if (filter === 'import' && card.classList.contains('import') && !card.classList.contains('error')) {
+                        card.style.display = '';
+                    } else if (filter === 'export' && card.classList.contains('export') && !card.classList.contains('error')) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Don't hide active process
+                const activeProcess = document.getElementById('activeProcess');
+                if (activeProcess && activeProcess.style.display === 'block') {
+                    activeProcess.style.display = 'block';
+                }
+            });
+        });
+        
+        // Update counts on load
+        updateActivityCounts();
+
+        // Active process simulation
+        const processes = [
+            { type: 'import', source: 'Topcon MYAH', current: 2, total: 3, unit: 'files' },
+            { type: 'export', source: 'AL550', current: 1, total: 4, unit: 'patients' },
+            { type: 'import', source: 'Eye-Office API', current: 12, total: 15, unit: 'patients' },
+            null // System ready - no active process
+        ];
+
+        let processIndex = 0;
+        let currentProcess = null;
+
+        function updateActiveProcess() {
+            const activeProcessDiv = document.getElementById('activeProcess');
+            const process = processes[processIndex];
+
+            if (process) {
+                // Show active process
+                activeProcessDiv.style.display = '';
+                
+                const icon = process.type === 'import' ? 
+                    '<i class="fas fa-download"></i>' : 
+                    '<i class="fas fa-upload"></i>';
+                
+                const label = process.type === 'import' ? 'Importing' : 'Exporting';
+                const progress = `${process.source} (${process.current}/${process.total} ${process.unit})`;
+
+                document.getElementById('activeIcon').innerHTML = icon;
+                document.getElementById('activeLabel').textContent = label;
+                document.getElementById('activeContent').textContent = progress;
+
+                // Update card class
+                activeProcessDiv.className = `activity-card ${process.type} active-process`;
+
+                // Simulate progress
+                if (process.current < process.total) {
+                    processes[processIndex].current++;
+                }
+            } else {
+                // Hide when no active process
+                activeProcessDiv.style.display = 'none';
+            }
+
+            processIndex = (processIndex + 1) % processes.length;
+        }
+
+        // Simulate update availability
+        let isUpdateAvailable = false;
+        setTimeout(() => {
+            isUpdateAvailable = true;
+            const versionInfo = document.getElementById('versionInfo');
+            versionInfo.innerHTML = '<span class="version-update">v2.0.1 available</span>';
+        }, 5000);
+
+        // Handle version/update click
+        function handleVersionClick() {
+            if (isUpdateAvailable) {
+                showDialog('updateDialog');
+            } else {
+                showDialog('aboutDialog');
+            }
+        }
+
+        // Dialog functions
+        function showDialog(dialogId) {
+            const dialog = document.getElementById(dialogId);
+            dialog.classList.add('show');
+        }
+
+        function closeDialog(dialogId) {
+            const dialog = document.getElementById(dialogId);
+            dialog.classList.remove('show');
+        }
+
+        function installUpdate() {
+            console.log('Installing update...');
+            closeDialog('updateDialog');
+            // In real app, would trigger update process
+        }
+
+        // Close dialog on overlay click
+        document.querySelectorAll('.dialog-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+
+        // Update active process every 4 seconds
+        setInterval(() => {
+            updateActiveProcess();
+            updateActivityCounts();
+        }, 4000);
+        updateActiveProcess(); // Initial call
+        updateActivityCounts(); // Initial count
+
+        // Add entrance animations
+        document.querySelectorAll('.activity-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(-20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.3s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateX(0)';
+            }, 30 * index);
+        });
+    </script>
+</body>
+</html>

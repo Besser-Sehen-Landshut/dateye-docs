@@ -39,6 +39,8 @@ Supports two export formats:
     <OD>
       <AxialLength>23.45</AxialLength>
       <SNR>12.8</SNR>
+      <MeasurementCount>5</MeasurementCount>
+      <StandardDeviation>0.02</StandardDeviation>
       <K1>43.25</K1>
       <K1Axis>178</K1Axis>
       <K2>44.50</K2>
@@ -57,10 +59,13 @@ Supports two export formats:
 
 | Tag | Field | DATEYE | Unit |
 |-----|-------|--------|------|
-| (0022,0030) | Axial Length | `axial_length.value` | mm |
-| (0022,0031) | Keratometry | `cornea.k1_d`, `cornea.k2_d` | D |
+| (0022,0030) | Axial Length | `axial_length.value_mm` | mm |
+| (0022,0031) | Keratometry | `cornea.k1_mm`, `cornea.k2_mm` | mm |
 | (0022,0032) | ACD | `acd.value` | mm |
-| (0022,0033) | White-to-White | `white_to_white.horizontal` | mm |
+| (0022,0033) | White-to-White | `cornea.corneal_diameter` | mm |
+| - | Central corneal thickness | `cornea.corneal_thickness` | μm |
+| - | Signal-to-noise | `axial_length.signal_noise` | - |
+| - | Measurement count | `axial_length.measurements` | - |
 
 ### Quality Requirements
 
@@ -94,7 +99,7 @@ Study Instance UID
 
 | Measurement | DATEYE Field | Notes |
 |-------------|--------------|-------|
-| Central corneal thickness | `cornea.central_thickness` | From OCT |
+| Central corneal thickness | `cornea.corneal_thickness` | From OCT |
 | Lens thickness | `lens_thickness.value` | Direct measurement |
 | Total keratometry | `cornea.type = "total"` | Licensed feature |
 | Posterior K values | `cornea.posterior_k1_d` | If available |
@@ -172,7 +177,11 @@ class ZeissIOLMasterAdapter extends DataAdapter {
     if (axialLength != null) {
       measurements.add(Measurement('axial_length', {
         'eye': _getEyeFromDataset(dataset),
-        'value': axialLength,
+        'value_mm': axialLength,
+        'signal_noise': dataset.getFloat32(0x00220034),  // Private tag
+        'measurements': dataset.getInt32(0x00220035) ?? 5,
+        'standard_deviation': dataset.getFloat32(0x00220036),
+        'data_source': 'device',
         'method': 'optical',
       }));
     }
@@ -181,6 +190,13 @@ class ZeissIOLMasterAdapter extends DataAdapter {
     final kSequence = dataset.getSequence(0x00220031);
     if (kSequence != null) {
       measurements.add(_parseKeratometry(kSequence));
+    }
+    
+    // White-to-white as part of cornea
+    final wtw = dataset.getFloat32(0x00220033);
+    if (wtw != null && kSequence != null) {
+      // Update cornea measurement with WTW
+      measurements.last['corneal_diameter'] = wtw;
     }
     
     return ParseResult(
@@ -228,7 +244,8 @@ String _detectModel(Map data) {
 
 | Measurement | IOLMaster 500 | IOLMaster 700 |
 |-------------|---------------|---------------|
-| Axial Length | 20-30mm | 20-30mm |
+| Axial Length | 15-35mm | 15-35mm |
+| Signal Noise | >2.0 | >8.0 |
 | Keratometry | 37-52D | 38-52D |
 | ACD | 2.0-5.0mm | 2.0-5.0mm |
 | Lens Thickness | N/A | 3.0-6.0mm |

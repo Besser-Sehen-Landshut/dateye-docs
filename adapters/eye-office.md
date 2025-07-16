@@ -70,7 +70,7 @@ Eye-Office REST API response structure:
 Data extraction pipeline:
 - **Patient Mapping**: Demographics to DATEYE format
 - **Refraction Conversion**: Prescription data transformation
-- **Measurement Extraction**: Separate measurement types
+- **Measurement Extraction**: Integrated refraction with visual acuity
 
 ## Field Mapping Specification
 
@@ -87,53 +87,42 @@ Data extraction pipeline:
 ### Refraction Measurements
 
 | Eye-Office Field | DATEYE Field | Unit | Description |
-|-----------------|--------------|------|-------------|
+|-----------------|--------------|------|--------------|
 | `sphere` | `sphere` | diopters | Spherical correction |
 | `cylinder` | `cylinder` | diopters | Cylindrical correction |
 | `axisCylinder` | `axis` | degrees | Cylinder axis (0-180) |
 | `addition` | `addition` | diopters | Near addition |
 | `backVertexDistance` | `vertex` | mm | Vertex distance |
-| `useForOrder` | `use_for_order` | boolean | Current prescription |
+| `visusCc` | `va_cc` | decimal | Corrected visual acuity |
+| `useForOrder` | - | boolean | Current prescription flag |
 
 ### Prism Values
 
-Prism components stored separately:
+Prism values converted to resultant prism:
 
 ```dart
-// Horizontal prism conversion
-if (prismHorizontalValue > 0) {
-  prism.add({
-    'value': prismHorizontalValue,
-    'base': prismHorizontalAxis  // TABO notation
-  });
-}
-```
-
-### Visual Acuity
-
-Converted to separate measurement type:
-
-```json
-{
-  "type": "visual_acuity",
-  "data": {
-    "eye": "right",
-    "value": 1.0,        // Decimal notation
-    "correction": "cc"    // Corrected only
-  }
+// Calculate resultant prism from components
+if (prismHorizontalValue > 0 || prismVerticalValue > 0) {
+  final resultantPrism = sqrt(pow(prismHorizontalValue, 2) + pow(prismVerticalValue, 2));
+  final resultantBase = calculatePrismBase(prismHorizontalValue, prismHorizontalAxis,
+                                          prismVerticalValue, prismVerticalAxis);
+  return {
+    'prism': resultantPrism,
+    'prism_base': resultantBase
+  };
 }
 ```
 
 ### Complete Prism Mapping
 
 | Eye-Office Field | DATEYE Field | Unit | Description |
-|-----------------|--------------|------|-------------|
-| `prismHorizontalValue` | `prism.horizontal.value` | prism diopters | Horizontal component |
-| `prismHorizontalAxis` | `prism.horizontal.base` | degrees | Base direction (0-360) |
-| `prismVerticalValue` | `prism.vertical.value` | prism diopters | Vertical component |
-| `prismVerticalAxis` | `prism.vertical.base` | degrees | Base direction (0-360) |
-| `prismResultingValue` | `prism.resulting.value` | prism diopters | Combined prism |
-| `prismResultingAxis` | `prism.resulting.base` | degrees | Combined direction |
+|-----------------|--------------|------|--------------|
+| `prismHorizontalValue` | - | prism diopters | Used for calculation |
+| `prismHorizontalAxis` | - | degrees | Used for calculation |
+| `prismVerticalValue` | - | prism diopters | Used for calculation |
+| `prismVerticalAxis` | - | degrees | Used for calculation |
+| `prismResultingValue` | `prism` | prism diopters | Calculated resultant |
+| `prismResultingAxis` | `prism_base` | degrees | Calculated base direction |
 
 ## API Configuration
 
@@ -249,7 +238,7 @@ async function deltaSync(lastSyncTime: DateTime) {
 ### API Endpoint Reference
 
 | Endpoint | Method | Purpose | Frequency |
-|----------|--------|---------|-----------|
+|----------|--------|---------|------------|
 | `/v1/login` | POST | Session creation | Startup |
 | `/v1/ping` | GET | Session maintenance | 5 minutes |
 | `/v1/logout` | GET | Session termination | Shutdown |
@@ -312,12 +301,10 @@ class EyeOfficeImportAdapter implements ImportAdapter {
         
         if (latest.rightEye != null) {
           measurements.add(_parseRefraction(latest.rightEye, 'right'));
-          measurements.add(_parseVisualAcuity(latest.rightEye, 'right'));
         }
         
         if (latest.leftEye != null) {
           measurements.add(_parseRefraction(latest.leftEye, 'left'));
-          measurements.add(_parseVisualAcuity(latest.leftEye, 'left'));
         }
       }
       
@@ -331,8 +318,92 @@ class EyeOfficeImportAdapter implements ImportAdapter {
     
     return results;
   }
+  
+  Measurement _parseRefraction(EyeData data, String eye) {
+    return Measurement.refraction(
+      eye: eye,
+      sphere: data.sphere,
+      cylinder: data.cylinder,
+      axis: data.axisCylinder,
+      addition: data.addition,
+      vertex: data.backVertexDistance,
+      prism: _calculateResultantPrism(data),
+      prism_base: _calculatePrismBase(data),
+      va_cc: data.visusCc,
+      refraction_type: 'subjective',
+      condition: 'regular',
+      data_source: 'device',
+    );
+  }
 }
 ```
+
+## Data Mapping
+
+### Patient Demographics
+```json
+// Eye-Office API
+{
+  "id": 12345,
+  "firstname": "Anna",
+  "lastname": "Schmidt",
+  "birthday": "2010-03-15",
+  "sex": "female"
+}
+```
+
+```dart
+// DATEYE Format
+Patient(
+  externalId: "EYE-OFFICE-12345",
+  firstName: "Anna",
+  lastName: "Schmidt",
+  birthDate: DateTime(2010, 3, 15),
+  gender: Gender.female,
+)
+```
+
+### Refraction Data
+```json
+// Eye-Office API
+"refrRight": {
+  "sphere": -2.25,
+  "cylinder": -0.50,
+  "axisCylinder": 90,
+  "addition": 2.00,
+  "visusCc": 1.0
+}
+```
+
+```dart
+// DATEYE Format
+Measurement.refraction(
+  eye: 'right',
+  sphere: -2.25,
+  cylinder: -0.50,
+  axis: 90,
+  addition: 2.00,
+  va_cc: 1.0,
+  refraction_type: 'subjective',
+  condition: 'regular',
+  data_source: 'device',
+)
+```
+
+### Field Mappings
+
+| Eye-Office Field | DATEYE Field | Notes |
+|------------------|--------------|-------|
+| `id` | `external_id` | Prefixed with "EYE-OFFICE-" |
+| `firstname` | `first_name` | Direct mapping |
+| `lastname` | `last_name` | Direct mapping |
+| `birthday` | `birth_date` | Parse to DateTime |
+| `sex` | `gender` | Normalize to enum |
+| `sphere` | `refraction.sphere` | Direct mapping |
+| `cylinder` | `refraction.cylinder` | Direct mapping |
+| `axisCylinder` | `refraction.axis` | Direct mapping |
+| `addition` | `refraction.addition` | Optional field |
+| `visusCc` | `va_cc` | Corrected vision (part of refraction) |
 
 ## Testing Requirements
 

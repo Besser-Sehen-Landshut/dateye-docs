@@ -75,20 +75,37 @@ dataFilter[2] → Anterior chamber depth (mm)
 dataFilter[3] → Lens thickness (mm)
 ```
 
-**Field Mappings:**
+**Complete Field Mappings:**
 
 | AL550 | DATEYE | Unit | Notes |
 |-------|--------|------|-------|
-| `AxialCase.Data.dataFilter[0]` | `axial_length.value` | mm | |
-| `AxialCase.Data.snrData[0]` | `axial_length.snr` | - | Signal quality |
-| `TopographyCase.Data.CorneaFront.K1` | `cornea.k1_d` | D | |
-| `TopographyCase.Data.CorneaFront.Rf` | `cornea.k1_mm` | mm | |
-| `TopographyCase.Data.CorneaFront.K2` | `cornea.k2_d` | D | |
-| `TopographyCase.Data.CorneaFront.Rs` | `cornea.k2_mm` | mm | |
-| `WTWCase.Data.wtw.r` | `white_to_white.horizontal` | mm | × 2 (radius to diameter) |
-| `WTWCase.Data.pupil.r` | `pupil.photopic` | mm | × 2 (radius to diameter) |
+| **Axial Length** ||||
+| `AxialCase.Data.dataFilter[0]` | `axial_length.value_mm` | mm | |
+| `AxialCase.Data.snrData[0]` | `axial_length.signal_noise` | - | Signal quality |
+| **Anterior Chamber** ||||
+| `AxialCase.Data.dataFilter[2]` | `anterior_chamber.acd` | mm | ACD value |
+| **Lens** ||||
+| `AxialCase.Data.dataFilter[3]` | `lens.thickness` | mm | Lens thickness |
+| **Cornea** ||||
+| `TopographyCase.Data.CorneaFront.Rf` | `cornea.k1_mm` | mm | Flat meridian |
+| `TopographyCase.Data.CorneaFront.Rs` | `cornea.k2_mm` | mm | Steep meridian |
+| `TopographyCase.Data.CorneaFront.AxisFlat` | `cornea.axis_k1` | degrees | |
+| `TopographyCase.Data.CorneaFront.AxisSteep` | `cornea.axis_k2` | degrees | |
+| `WTWCase.Data.wtw.r` | `cornea.corneal_diameter` | mm | × 2 (radius to diameter) |
+| `AxialCase.Data.dataFilter[1]` | `cornea.corneal_thickness` | μm | × 1000 (mm to μm) |
+| **Pupil** ||||
+| `WTWCase.Data.pupil.r` | `pupil.diameter` | mm | × 2 (radius to diameter) |
 
 ## ExportAdapter Functionality
+
+### CRITICAL: Patient Registration Only
+
+**The AL550 ExportAdapter sends ONLY patient demographics to the device:**
+- Patient ID, First name, Last name, Birth date, Gender
+- **NO measurement data is exported** (AL550 cannot receive measurements)
+- **Purpose**: Patient must be registered BEFORE measurement on device
+
+This is a common misconception - the AL550 can export all its measurements but can only import patient registration data.
 
 ### Patient Registration
 
@@ -177,8 +194,8 @@ Default URL: `http://<device-ip>:8080`
 ### Range Validation
 
 | Measurement | Normal | Extended | Action |
-|-------------|--------|----------|--------|
-| Axial Length | 22-26mm | 20-30mm | Flag if outside |
+|-------------|--------|----------|---------|
+| Axial Length | 22-26mm | 15-35mm | Flag if outside |
 | Keratometry | 40-48D | 38-50D | Flag if outside |
 | ACD | 2.5-4.0mm | 2.0-5.0mm | Flag if outside |
 | Lens Thickness | 3.5-5.0mm | 3.0-6.0mm | Flag if outside |
@@ -224,24 +241,33 @@ class MediworksAL550Adapter extends DataAdapter {
           final data = eyeData['AxialCase']['Data'];
           measurements.add(Measurement('axial_length', {
             'eye': eyeSide,
-            'value': data['dataFilter'][0],
-            'snr': data['snrData'][0],
+            'value_mm': data['dataFilter'][0],
+            'signal_noise': data['snrData'][0],
+            'measurements': 5,  // Device default
+            'data_source': 'device',
             'measured_at': examTime.toIso8601String(),
           }));
         }
         
-        // Keratometry
+        // Keratometry and corneal measurements
         if (eyeData['TopographyCase'] != null) {
           final cornea = eyeData['TopographyCase']['Data']['CorneaFront'];
+          final axialData = eyeData['AxialCase']?['Data'];
+          final wtwData = eyeData['WTWCase']?['Data'];
+          
           measurements.add(Measurement('cornea', {
             'eye': eyeSide,
-            'k1_d': cornea['K1'],
             'k1_mm': cornea['Rf'],
-            'k2_d': cornea['K2'],
             'k2_mm': cornea['Rs'],
             'axis_k1': cornea['AxisFlat'],
             'axis_k2': cornea['AxisSteep'],
-            'astigmatism': cornea['Astig'],
+            'corneal_diameter': wtwData?['wtw']?['r'] != null 
+              ? wtwData['wtw']['r'] * 2  // Convert radius to diameter
+              : null,
+            'corneal_thickness': axialData?['dataFilter']?[1] != null
+              ? (axialData['dataFilter'][1] * 1000).round()  // Convert mm to μm
+              : null,
+            'data_source': 'device',
           }));
         }
       }
@@ -295,7 +321,7 @@ class MediworksAL550Adapter extends DataAdapter {
 ## Error Handling
 
 | Error | Import | Export |
-|-------|--------|--------|
+|-------|--------|---------|
 | Network timeout | N/A | Retry with backoff |
 | Invalid JSON | Skip file | N/A |
 | Missing required field | Import partial | Skip patient |

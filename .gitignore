@@ -1,0 +1,15 @@
+# Generated files
+summary.txt
+summary-essential.txt
+
+# macOS
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Archive scripts
+archive-*.sh
+move-*.sh

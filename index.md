@@ -4,67 +4,91 @@ Complete technical documentation for the DATEYE medical device integration platf
 
 ## Overview
 
-DATEYE is an offline-first desktop application that enables seamless data transfer between incompatible medical devices. The system uses an ImportAdapter/ExportAdapter pattern to integrate various ophthalmologic devices and practice management systems.
+- [Architecture](architecture.md) - System design, technical principles, and requirements
 
-## Core Architecture
+## Implementation
 
-- **[Architecture](architecture.md)** - System design and component overview
-- **[Data Formats](data-formats.md)** - File formats, data structures, and specifications
-- **[Adapter Development](adapter-development.md)** - Creating device adapters
+- [Implementation Guide](implementation/README.md) - Current development tasks and priorities
+- [Current Tasks](implementation/current-tasks.md) - Step-by-step implementation instructions
 
-## Implementation Guides
+## Core Documentation
 
-- **[Flutter Implementation](flutter-implementation.md)** - Platform-native desktop development
-- **[Current Development Tasks](implementation/current-tasks.md)** - Priority implementation tasks
+### Data Handling
+
+- [Data Formats](data-formats.md) - Complete specification of file formats, data structures, and measurement types
+
+### Development
+
+- [Adapter Development](adapter-development.md) - Creating ImportAdapter and ExportAdapter implementations
+- [Flutter Implementation](flutter-implementation.md) - Platform-native desktop application development
+
+### Security
+
+- [Encryption Implementation](security/encryption-planned.md) - Patient data protection strategy
 
 ## Device Adapters
 
-- **[Adapter Overview](adapters/README.md)** - Summary of all supported devices
-- **[Topcon MYAH](adapters/topcon-myah.md)** - Myopia control device integration
+### Overview
+- [Adapter Index](adapters/README.md) - Complete list of supported devices
 
-## UI Design
+### Import/Export Adapters
 
-- **[Design System](ui-design/design-system.md)** - Platform-native UI components
-- **[Dashboard](ui-design/dashboard/dashboard.md)** - Main application interface
-- **[Connections](ui-design/connections/connections.md)** - Import/Export workflow management
+- [Topcon MYAH](adapters/topcon-myah.md) - Myopia control device integration
+- [ZEISS IOLMaster](adapters/zeiss-iolmaster.md) - Optical biometry integration
+- [Eye-Office](adapters/eye-office.md) - Practice management system integration
+- [Mediworks AL550](adapters/mediworks-al550.md) - Optical biometer integration
 
-## System Status
+## External APIs
 
-**Current State**: ~70% complete
-- ✅ ImportAdapter system with Topcon MYAH implementation
-- ✅ Core data models and storage
-- ✅ Flutter UI framework
-- ❌ ExportAdapter system (critical missing component)
-- ❌ Patient data encryption
+### Eye-Office
+- [API Overview](external-apis/eye-office/README.md) - REST API documentation
+- [API Specification](external-apis/eye-office/eye-office-api-1.yaml) - OpenAPI 3.0 specification
 
-**Priority**: Complete export functionality - see [Current Tasks](implementation/current-tasks.md)
+### Mediworks
+- [API Overview](external-apis/mediworks/README.md) - AL550 integration documentation
+- [Export File Format](external-apis/mediworks/AL550ExportFile-EN.md) - Detailed field descriptions
+- [GET Patients Endpoint](external-apis/mediworks/getPatients-en.md) - Patient retrieval API
+- [SET Patients Endpoint](external-apis/mediworks/setPatients-en.md) - Patient registration API
 
-## Key Principles
+### ZEISS
+- [API Overview](external-apis/zeiss/README.md) - DICOM integration documentation
+- [IOLMaster 700 Types](external-apis/zeiss/IOLMaster700Types.md) - Complete DICOM structure reference
 
-1. **Offline-First**: No database, no services, no network dependencies
-2. **Transparent Operations**: All actions logged and auditable
-3. **Privacy-First**: Patient data encrypted with local keys
-4. **Adapter Pattern**: Extensible device integration
+## User Interface Design
 
-## Getting Started
+### Overview
+- [UI Design Philosophy](ui-design/README.md) - Design principles and guidelines
+- [Design System](ui-design/design-system.md) - Platform-native component specifications
 
-For developers joining the project:
+### Screens
 
-1. Review [Architecture](architecture.md) for system design
-2. Check [Current Tasks](implementation/current-tasks.md) for immediate priorities
-3. Examine [Topcon MYAH Adapter](adapters/topcon-myah.md) as reference implementation
-4. Follow [Flutter Implementation](flutter-implementation.md) for platform setup
+#### Dashboard
+- [Dashboard Screen](ui-design/dashboard/dashboard.md) - Main status overview
 
-## Documentation Maintenance
+#### Connections
+- [Connections Overview](ui-design/connections/README.md) - Import/Export workflow management
+- [Connections Screen](ui-design/connections/connections.md) - Detailed specifications
 
-This documentation is automatically synchronized between:
-- Local development: `/docs/`
-- GitHub repository: `dateye-docs`
+#### History
+- [History Screen](ui-design/history/history.md) - Complete operation logs
 
-Updates should be made locally and synchronized using the update scripts.
+#### Settings
+- [Settings Screen](ui-design/settings/settings.md) - Application configuration
+
+### Additional UI Components
+
+- [Eye-Office Setup](ui-design/eye-office-setup/eye-office-setup.md) - API connection wizard
+- [Eye-Office Sync Details](ui-design/eye-office-setup/eye-office-sync-details.md) - Synchronization dialogs
+- [Identity Key Dialog](ui-design/identity-key-dialog/identity-key-dialog.md) - Encryption key notification
+
+### Logo System
+- [Logo Documentation](ui-design/logo/README.md) - Complete logo system and usage guidelines
+
+## Maintenance
+
+Run update script: `cd /update/ && ./update.sh`
 
 ---
 
-**Version**: 1.0  
-**Last Updated**: 2025-01-13  
-**Maintained by**: DATEYE Development Team
+Generated: 2025-01-13  
+Update command: `cd /update/ && ./update.sh`

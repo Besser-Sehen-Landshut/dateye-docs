@@ -138,27 +138,6 @@ SystemTray.setIcon('assets/logo/dateye-tray.svg'),
 - **Format**: Logo + "Medical Device Integration Platform"
 - **Layout**: Vertically stacked or horizontal
 
-## Adaptive Display
-
-### Responsive Strategies
-
-| Screen Width | Logo Variant | Implementation |
-|--------------|--------------|----------------|
-| > 1200px | Full logo + tagline | `dateye-about.svg` |
-| 800-1200px | Full logo | `dateye-main.svg` |
-| 400-800px | Compact logo | `dateye-icon.svg` |
-| < 400px | Icon only | `dateye-favicon.svg` |
-
-### Size Recommendations
-
-| Context | Width | Height | File |
-|---------|-------|--------|------|
-| Header (Desktop) | 180-220px | auto | `dateye-main.svg` |
-| Header (Tablet) | 140-180px | auto | `dateye-main.svg` |
-| Header (Mobile) | 100-140px | auto | `dateye-main.svg` |
-| App Icon | 64-256px | 64-256px | `dateye-icon.svg` |
-| Favicon | 16-32px | 16-32px | `dateye-favicon.svg` |
-
 ## Technical Specifications
 
 ### SVG Optimization
@@ -179,22 +158,6 @@ All logo files are optimized for performance:
 - Alternative text descriptions provided
 - Scalable for visual impairments
 - Monochrome fallback option available
-
-## Quality Control
-
-### Pre-Implementation Checklist
-- [ ] Logo is readable at target size
-- [ ] Colors match specifications
-- [ ] Transparency works on all backgrounds
-- [ ] SVG code is optimized and valid
-- [ ] Alternative text is meaningful
-- [ ] Browser tests performed
-
-### Performance Criteria
-- SVG file size < 5KB for main logo
-- SVG file size < 2KB for icons
-- Load time < 100ms on standard connection
-- Render time < 16ms for 60fps animations
 
 ## License and Usage Rights
 

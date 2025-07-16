@@ -27,7 +27,7 @@ DATEYE uses a device-specific identity key for encrypting and decrypting sensiti
 │  │ 9c82-fdd1-7ae9-42b7-ae13-ff22b1a9129e             │   │
 │  └────────────────────────────────────────────────────┘   │
 │                                                            │
-│  ⚠️ IMPORTANT: Without this key, your data will be        │
+│   IMPORTANT: Without this key, your data will be        │
 │     permanently inaccessible!                              │
 │                                                            │
 │ [ Open Folder ]   [ Print ]                    [ OK ]     │

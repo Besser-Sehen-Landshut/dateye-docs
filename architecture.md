@@ -90,7 +90,7 @@ DATEYE/
 ### Event Hierarchy
 Three-level event structure for traceability:
 - **Import Events**: Data reception from device
-- **Export Events**: Data transmission to device  
+- **Export Events**: Data transmission to device
 - **Transfer Events**: Business workflow completion (links Import+Export)
 
 ### Pipeline
@@ -126,7 +126,7 @@ Measurement.axialLength(
 )
 
 Measurement.cornea(
-  eye: 'right', 
+  eye: 'right',
   k1_mm: 7.89,
   k1_d: 337.5 / 7.89,  // Calculated
 )
@@ -150,7 +150,7 @@ Measurement.cornea(
 ### ❌ Missing (Critical Path)
 1. **Build configuration** - `injection.config.dart` not generated
 2. **IExportAdapter interface** - Not implemented
-3. **AL550 ExportAdapter** - Not implemented  
+3. **AL550 ExportAdapter** - Not implemented
 4. **ExportingDatasource** - All methods throw `UnimplementedError()`
 5. **Data transformation** - Import parses XML but doesn't convert to DATEYE format
 6. **Patient encryption** - Security layer not implemented
@@ -166,7 +166,7 @@ Measurement.cornea(
 ## Adapter Registry
 
 | Device | Type | Import | Export | Status |
-|--------|------|---------|---------|----------|
+|--------|------|---------|---------|---------|
 | Topcon MYAH | Biometer | ✅ | - | Complete |
 | Mediworks AL550 | Biometer | Planned | ❌ | Export missing |
 | ZEISS IOLMaster | Biometer | Planned | - | Not started |

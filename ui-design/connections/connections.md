@@ -216,7 +216,7 @@ Import/Export workflow management interface for medical device integration.
 enum ImportSourceStatus {
   active,      // Monitoring and processing files/API
   paused,      // User-paused
-  error,       // Connection/processing error
+  error,       // Connection/processing error  
   disabled,    // User-disabled
 }
 ```
@@ -255,14 +255,14 @@ enum ExportTargetStatus {
 interface ConnectionsState {
   // Import sources
   importSources: ImportSource[];
-
-  // Export targets
+  
+  // Export targets  
   exportTargets: ExportTarget[];
-
+  
   // Manual operations
   isImporting: boolean;
   isExporting: boolean;
-
+  
   // Discovery
   availableAdapters: AdapterInfo[];
 }
@@ -296,7 +296,7 @@ interface ExportTarget {
 ```
  MYAH Import Error
    Failed to parse patient_001.xml (Invalid XML format)
-
+   
    [Skip File] [Retry] [View Details]
 ```
 
@@ -304,7 +304,7 @@ interface ExportTarget {
 ```
  Eye-Office API Error
    Connection timeout (https://eye-office.local:4450)
-
+   
    [Test Connection] [Edit Configuration] [Retry]
 ```
 
@@ -314,7 +314,7 @@ interface ExportTarget {
 ```
  AL550 Export Error
    Device unreachable (192.168.1.100:8080)
-
+   
    [Test Connection] [Edit Configuration] [Queue for Retry]
 ```
 
@@ -323,7 +323,7 @@ interface ExportTarget {
  Export Warning
    2 patients skipped (missing required fields)
    8 patients exported successfully
-
+   
    [View Details] [Export Failed Items] [Continue]
 ```
 

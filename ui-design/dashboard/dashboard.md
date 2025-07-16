@@ -73,7 +73,7 @@ The dashboard provides a read-only overview of DATEYE's background operations. I
 ### Minimal Footer
 
 - System status on the left
-- Version info on the right  
+- Version info on the right
 - Clean single-line design
 - No navigation buttons (moved to tabs)
 
@@ -84,7 +84,7 @@ The dashboard provides a read-only overview of DATEYE's background operations. I
 - Quick visual indication of activity distribution
 - Helps prioritize attention (e.g., "Errors (2)" draws eye)
 
-### 🖥️ Interactive Mockup
+###  Interactive Mockup
 
 **[View Windows Fluent UI Dashboard Mockup](dashboard-fluent-ui.html)**
 
@@ -106,7 +106,7 @@ The interactive mockup demonstrates:
 - Minimal footer with status
 - Auto-scrolling for longer activity lists
 
-## 🎯 Key Features
+##  Key Features
 
 ### 1. Active Process Display
 - **Subtle Indicator**: Light blue background (8% opacity)
@@ -118,7 +118,7 @@ The interactive mockup demonstrates:
 ### 2. Today's Activity Timeline
 - All events from today (filtered from log.ndjson)
 - **Mini-statistics**: Quick summary in header (X imports • Y exports • Z errors)
-- Chronological order (newest first) 
+- Chronological order (newest first)
 - **Enhanced details**: Shows filenames, patient names, or counts inline
 - No interaction - just information display
 - Older events accessible via "History" tab
@@ -159,7 +159,7 @@ The interactive mockup demonstrates:
 - First launch after installation
 - Manual app launch
 
-## 🔄 State Management
+##  State Management
 
 ```typescript
 interface DashboardState {
@@ -175,13 +175,13 @@ interface DashboardState {
     };
     startedAt: DateTime;
   } | null;
-  
+
   // Recent completed activities
   recentActivity: ActivityItem[];
-  
+
   // Filter state
   filter: 'all' | 'import' | 'export' | 'errors';
-  
+
   // Activity counts
   counts: {
     total: number;
@@ -189,7 +189,7 @@ interface DashboardState {
     exports: number;
     errors: number;
   };
-  
+
   // Version info
   version: {
     current: string;
@@ -218,18 +218,18 @@ interface ActivityItem {
 function onProcessComplete(process: ActiveProcess) {
   // 1. Remove from active
   state.activeProcess = null;
-  
+
   // 2. Create completed activity with timestamp
   const completedActivity: ActivityItem = {
     ...process,
     timestamp: DateTime.now(),
     status: 'success'
   };
-  
+
   // 3. Add to top of recent activities
   state.recentActivity.unshift(completedActivity);
-  
-  // 4. Trim to keep only last 50 activities  
+
+  // 4. Trim to keep only last 50 activities
   state.recentActivity = state.recentActivity.slice(0, 50);
 }
 ```
@@ -248,7 +248,7 @@ function onProcessComplete(process: ActiveProcess) {
 - Shows all of today's activities (no fixed limit)
 - Auto-scrolls if needed (with subtle scrollbar)
 - Updates every 2 seconds when visible
-- Pauses updates when minimized  
+- Pauses updates when minimized
 - Smooth transitions when activities complete
 
 ## User Flow

@@ -18,7 +18,7 @@ Replaces "Import & Export" with user-friendly "Connections" workflows:
 
 The HTML demo demonstrates:
 - Empty state with template selection
-- Active workflows with status indicators  
+- Active workflows with status indicators
 - Setup wizard flow (modal)
 - Windows Fluent UI styling
 

@@ -28,12 +28,12 @@ Import/Export workflow management interface for medical device integration.
 │                                                          │
 │  Active Import Sources                                   │
 │  ┌─────────────────────────────────────────────────┐   │
-│  │ 📁 MYAH Files → DATEYE                     ✓   │   │
+│  │  MYAH Files → DATEYE                     ✓   │   │
 │  │   Watch folder: C:\Import\MYAH                 │   │
 │  │   Status: 3 files imported today               │   │
 │  │   [Configure] [Pause]                          │   │
 │  │                                                 │   │
-│  │ 🔗 Eye-Office API → DATEYE                ⏸   │   │
+│  │  Eye-Office API → DATEYE                ⏸   │   │
 │  │   Sync every 5 minutes                         │   │
 │  │   Status: Paused (API maintenance)             │   │
 │  │   [Configure] [Resume]                          │   │
@@ -46,7 +46,7 @@ Import/Export workflow management interface for medical device integration.
 │  │   Status: 2 patients exported 1 hour ago       │   │
 │  │   [Configure] [Test Connection]                 │   │
 │  │                                                 │   │
-│  │ DATEYE → 💾 File Backup                   ✓   │   │
+│  │ DATEYE →  File Backup                   ✓   │   │
 │  │   Daily backup to external drive               │   │
 │  │   Status: Last backup completed 6 hours ago    │   │
 │  │   [Configure] [Run Now]                         │   │
@@ -88,13 +88,13 @@ Import/Export workflow management interface for medical device integration.
 │                                                                       │
 │  Select Import Adapter:                                               │
 │  ┌─────────────────────────────────────────────────┐                 │
-│  │ ◉ 📁 MYAH Files                                 │                 │
+│  │ ◉  MYAH Files                                 │                 │
 │  │   Import XML files from Topcon MYAH device     │                 │
 │  │   Source: File system monitoring               │                 │
 │  └─────────────────────────────────────────────────┘                 │
 │                                                                       │
 │  ┌─────────────────────────────────────────────────┐                 │
-│  │ ○ 🔗 Eye-Office API                             │                 │
+│  │ ○  Eye-Office API                             │                 │
 │  │   Import patient data via REST API             │                 │
 │  │   Source: Practice management system           │                 │
 │  └─────────────────────────────────────────────────┘                 │
@@ -107,7 +107,7 @@ Import/Export workflow management interface for medical device integration.
 │                                                                       │
 │  ─────────────────────────────────────────────────────────────────  │
 │                                                                       │
-│  📁 MYAH Files Configuration                                         │
+│   MYAH Files Configuration                                         │
 │                                                                       │
 │  Watch Folder: [C:\Import\MYAH\           ] [Browse]                 │
 │  File Pattern: [*.xml                     ]                          │
@@ -133,7 +133,7 @@ Import/Export workflow management interface for medical device integration.
 │  └─────────────────────────────────────────────────┘                 │
 │                                                                       │
 │  ┌─────────────────────────────────────────────────┐                 │
-│  │ ○ 💾 File Export                                │                 │
+│  │ ○  File Export                                │                 │
 │  │   Export data to JSON/CSV files               │                 │
 │  │   Target: File system                          │                 │
 │  └─────────────────────────────────────────────────┘                 │
@@ -216,7 +216,7 @@ Import/Export workflow management interface for medical device integration.
 enum ImportSourceStatus {
   active,      // Monitoring and processing files/API
   paused,      // User-paused
-  error,       // Connection/processing error  
+  error,       // Connection/processing error
   disabled,    // User-disabled
 }
 ```
@@ -234,10 +234,10 @@ enum ExportTargetStatus {
 
 ### Status Indicators
 
-- 🟢 **Active**: Processing data successfully
-- 🟡 **Warning**: Minor issues, auto-retrying
-- 🔴 **Error**: Manual intervention required
-- ⏸️ **Paused**: User-paused or scheduled downtime
+-  **Active**: Processing data successfully
+-  **Warning**: Minor issues, auto-retrying
+-  **Error**: Manual intervention required
+-  **Paused**: User-paused or scheduled downtime
 
 ### Connection Actions
 
@@ -255,14 +255,14 @@ enum ExportTargetStatus {
 interface ConnectionsState {
   // Import sources
   importSources: ImportSource[];
-  
-  // Export targets  
+
+  // Export targets
   exportTargets: ExportTarget[];
-  
+
   // Manual operations
   isImporting: boolean;
   isExporting: boolean;
-  
+
   // Discovery
   availableAdapters: AdapterInfo[];
 }
@@ -294,17 +294,17 @@ interface ExportTarget {
 
 **File Processing Issues:**
 ```
-🔴 MYAH Import Error
+ MYAH Import Error
    Failed to parse patient_001.xml (Invalid XML format)
-   
+
    [Skip File] [Retry] [View Details]
 ```
 
 **API Connection Issues:**
 ```
-🔴 Eye-Office API Error
+ Eye-Office API Error
    Connection timeout (https://eye-office.local:4450)
-   
+
    [Test Connection] [Edit Configuration] [Retry]
 ```
 
@@ -312,18 +312,18 @@ interface ExportTarget {
 
 **Device Offline:**
 ```
-🔴 AL550 Export Error
+ AL550 Export Error
    Device unreachable (192.168.1.100:8080)
-   
+
    [Test Connection] [Edit Configuration] [Queue for Retry]
 ```
 
 **Data Validation:**
 ```
-🟡 Export Warning
+ Export Warning
    2 patients skipped (missing required fields)
    8 patients exported successfully
-   
+
    [View Details] [Export Failed Items] [Continue]
 ```
 

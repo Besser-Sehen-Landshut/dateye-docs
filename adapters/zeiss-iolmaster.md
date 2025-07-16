@@ -136,31 +136,31 @@ Study Instance UID
 class ZeissIOLMasterAdapter extends DataAdapter {
   @override
   String get id => 'zeiss_iolmaster';
-  
+
   @override
   Future<ParseResult?> parseFile(File file) async {
     // Try DICOM first
     if (await _isDicomFile(file)) {
       return _parseDicom(file);
     }
-    
+
     // Try XML
     if (file.path.endsWith('.xml')) {
       return _parseXml(file);
     }
-    
+
     return null;
   }
-  
+
   Future<ParseResult?> _parseDicom(File file) async {
     final dataset = await DicomParser.parse(file);
-    
+
     // Check SOP Class
     final sopClass = dataset.getString(0x00080016);
     final isIOLMaster = sopClass?.contains('1.2.840.10008.5.1.4.1.1.78') ?? false;
-    
+
     if (!isIOLMaster) return null;
-    
+
     // Extract patient
     final patient = {
       'first_name': _parsePersonName(dataset.getString(0x00100010)),
@@ -168,10 +168,10 @@ class ZeissIOLMasterAdapter extends DataAdapter {
       'birth_date': _parseDicomDate(dataset.getString(0x00100030)),
       'gender': _mapDicomSex(dataset.getString(0x00100040)),
     };
-    
+
     // Extract measurements
     final measurements = <Measurement>[];
-    
+
     // Axial length
     final axialLength = dataset.getFloat32(0x00220030);
     if (axialLength != null) {
@@ -185,20 +185,20 @@ class ZeissIOLMasterAdapter extends DataAdapter {
         'method': 'optical',
       }));
     }
-    
+
     // Keratometry
     final kSequence = dataset.getSequence(0x00220031);
     if (kSequence != null) {
       measurements.add(_parseKeratometry(kSequence));
     }
-    
+
     // White-to-white as part of cornea
     final wtw = dataset.getFloat32(0x00220033);
     if (wtw != null && kSequence != null) {
       // Update cornea measurement with WTW
       measurements.last['corneal_diameter'] = wtw;
     }
-    
+
     return ParseResult(
       externalPid: 'iol_${dataset.getString(0x00100020)}',
       patientData: patient,
@@ -216,17 +216,17 @@ The adapter automatically detects the model:
 ```dart
 String _detectModel(Map data) {
   // IOLMaster 700 specific features
-  if (data.containsKey('TotalKeratometry') || 
+  if (data.containsKey('TotalKeratometry') ||
       data.containsKey('SweptSourceOCT')) {
     return 'iolmaster_700';
   }
-  
+
   // Check software version
   final version = data['SoftwareVersion'];
   if (version?.startsWith('7.') ?? false) {
     return 'iolmaster_500';
   }
-  
+
   return 'iolmaster_unknown';
 }
 ```
@@ -234,7 +234,7 @@ String _detectModel(Map data) {
 ## Error Handling
 
 | Error | Handling |
-|-------|----------|
+|-------|-----------|
 | Invalid DICOM | Try XML parser |
 | Missing patient ID | Use exam date + initials |
 | Low SNR | Import with warning |
@@ -299,3 +299,4 @@ String _parseDicomDate(String? dicomDate) {
 - [Adapter Development](../adapter-development.md)
 - [Data Formats](../data-formats.md)
 - [ZEISS API Documentation](../external-apis/zeiss/README.md)
+

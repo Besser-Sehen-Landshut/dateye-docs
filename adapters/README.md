@@ -85,7 +85,7 @@ The AL550 can both provide and receive data, but only accepts patient registrati
 ## Measurement Availability Matrix
 
 | Field | MYAH | AL550 | IOLMaster 500 | IOLMaster 700 | Eye-Office |
-|-------|------|-------|---------------|---------------|------------|
+|-------|------|-------|---------------|---------------|-----------|
 | **Patient Data** | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Axial Length | ✓ | ✓ | ✓ | ✓ | ✗ |
 | Keratometry | ✓ | ✓ | ✓ | ✓ | ✗ |
@@ -105,3 +105,4 @@ All adapter documentation is:
 - ✓ Consistent with implementation
 - ✓ Clear about import/export capabilities
 - ✓ Clear about patient data import (all adapters)
+

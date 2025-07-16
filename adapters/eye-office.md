@@ -77,7 +77,7 @@ Data extraction pipeline:
 ### Patient Demographics
 
 | Eye-Office Field | DATEYE Field | Data Type |
-|-----------------|--------------|-----------|
+|-----------------|--------------|-------|
 | `firstname` | `first_name` | String (required) |
 | `lastname` | `last_name` | String (required) |
 | `birthday` | `birth_date` | Date (YYYY-MM-DD) |
@@ -87,7 +87,7 @@ Data extraction pipeline:
 ### Refraction Measurements
 
 | Eye-Office Field | DATEYE Field | Unit | Description |
-|-----------------|--------------|------|--------------|
+|-----------------|--------------|------|-----------|
 | `sphere` | `sphere` | diopters | Spherical correction |
 | `cylinder` | `cylinder` | diopters | Cylindrical correction |
 | `axisCylinder` | `axis` | degrees | Cylinder axis (0-180) |
@@ -116,7 +116,7 @@ if (prismHorizontalValue > 0 || prismVerticalValue > 0) {
 ### Complete Prism Mapping
 
 | Eye-Office Field | DATEYE Field | Unit | Description |
-|-----------------|--------------|------|--------------|
+|-----------------|--------------|------|-----------|
 | `prismHorizontalValue` | - | prism diopters | Used for calculation |
 | `prismHorizontalAxis` | - | degrees | Used for calculation |
 | `prismVerticalValue` | - | prism diopters | Used for calculation |
@@ -217,14 +217,14 @@ Incremental sync implementation:
 async function deltaSync(lastSyncTime: DateTime) {
   // Retrieve cached export criterion
   const exportId = await getExportCriterionId();
-  
+
   // Query modified patients
   const patients = await api.get('/customer', {
     crmcriteria: exportId,
     lastChangedGreaterThan: lastSyncTime.toISO(),
     pageSize: 100
   });
-  
+
   // Fetch refraction history
   for (const patient of patients.data) {
     const refractions = await api.get('/refraction', {
@@ -238,7 +238,7 @@ async function deltaSync(lastSyncTime: DateTime) {
 ### API Endpoint Reference
 
 | Endpoint | Method | Purpose | Frequency |
-|----------|--------|---------|------------|
+|----------|--------|---------|-----------|
 | `/v1/login` | POST | Session creation | Startup |
 | `/v1/ping` | GET | Session maintenance | 5 minutes |
 | `/v1/logout` | GET | Session termination | Shutdown |
@@ -264,28 +264,28 @@ async function deltaSync(lastSyncTime: DateTime) {
 class EyeOfficeImportAdapter implements ImportAdapter {
   final EyeOfficeApiClient _apiClient;
   final int _crmExportId;
-  
+
   @override
   String get id => 'eye_office';
-  
+
   @override
   String get displayName => 'Eye-Office';
-  
+
   Future<List<ParseResult>> importWithDelta(DateTime lastSync) async {
     // Query modified patients
     final patients = await _apiClient.getCustomers(
       crmcriteria: _crmExportId,
       lastChangedGreaterThan: lastSync,
     );
-    
+
     final results = <ParseResult>[];
-    
+
     for (final patient in patients) {
       // Retrieve refraction history
       final refractions = await _apiClient.getRefractions(
         customerId: patient.id,
       );
-      
+
       // Map patient demographics
       final patientData = {
         'first_name': patient.firstname,
@@ -293,21 +293,21 @@ class EyeOfficeImportAdapter implements ImportAdapter {
         'birth_date': patient.birthday,
         'gender': _mapGender(patient.sex),
       };
-      
+
       // Extract measurements
       final measurements = <Measurement>[];
       if (refractions.isNotEmpty) {
         final latest = refractions.first;
-        
+
         if (latest.rightEye != null) {
           measurements.add(_parseRefraction(latest.rightEye, 'right'));
         }
-        
+
         if (latest.leftEye != null) {
           measurements.add(_parseRefraction(latest.leftEye, 'left'));
         }
       }
-      
+
       results.add(ParseResult(
         externalPid: 'eo_${patient.id}',
         patientData: patientData,
@@ -315,10 +315,10 @@ class EyeOfficeImportAdapter implements ImportAdapter {
         examDate: refractions.firstOrNull?.date ?? DateTime.now(),
       ));
     }
-    
+
     return results;
   }
-  
+
   Measurement _parseRefraction(EyeData data, String eye) {
     return Measurement.refraction(
       eye: eye,

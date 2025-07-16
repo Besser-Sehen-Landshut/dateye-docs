@@ -25,32 +25,32 @@ MYAH exports data as XML files with UTF-16 encoding:
     <BirthDate>2012-05-02</BirthDate>
     <Sex>Male</Sex>
   </Patient>
-  
+
   <PatientEyeData>
     <ID>12345</ID>
     <PatientID>1066234</PatientID>
     <Eye>OD</Eye>
     <Date>2025-01-07</Date>
-    
+
     <Data>
       <FlatK>7.89</FlatK>
       <FlatAngle>178</FlatAngle>
       <SteepK>7.72</SteepK>
       <SteepAngle>88</SteepAngle>
-      
+
       <AxialLength>24.52</AxialLength>
-      
+
       <PupilCenter>
         <X>0.12</X>
         <Y>-0.08</Y>
       </PupilCenter>
-      
+
       <WTW>
         <Diameter>11.8</Diameter>
         <OffsetX>0.1</OffsetX>
         <OffsetY>-0.05</OffsetY>
       </WTW>
-      
+
       <!-- Corneal topography data matrices -->
       <CornealHeight>
         <Cols>24</Cols>
@@ -58,28 +58,28 @@ MYAH exports data as XML files with UTF-16 encoding:
         <MissingDataValue>-1.0</MissingDataValue>
         <!-- Matrix data -->
       </CornealHeight>
-      
+
       <AxialCurvatures>
         <Cols>24</Cols>
         <Rows>24</Rows>
         <MissingDataValue>-1.0</MissingDataValue>
         <!-- Matrix data -->
       </AxialCurvatures>
-      
+
       <TangentialCurvatures>
         <Cols>24</Cols>
         <Rows>24</Rows>
         <MissingDataValue>-1.0</MissingDataValue>
         <!-- Matrix data -->
       </TangentialCurvatures>
-      
+
       <PolarAngle>
         <Cols>24</Cols>
         <Rows>24</Rows>
         <MissingDataValue>-1.0</MissingDataValue>
         <!-- Matrix data -->
       </PolarAngle>
-      
+
       <PolarRadius>
         <Cols>24</Cols>
         <Rows>24</Rows>
@@ -117,7 +117,7 @@ MYAH exports data as XML files with UTF-16 encoding:
 ### Available Measurements
 
 | MYAH | DATEYE | Unit | Description |
-|------|--------|------|--------------|
+|------|--------|------|-----------|
 | **Axial Length** ||||
 | `AxialLength` | `axial_length.value_mm` | mm | Eye length |
 | **Cornea** ||||

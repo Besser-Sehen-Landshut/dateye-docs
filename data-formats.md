@@ -95,7 +95,7 @@ Three-level hierarchy:
   last_name: string,
   birth_date: string,       // ISO 8601 date (YYYY-MM-DD)
   gender: "male" | "female" | "other",
-
+  
   // Optional
   middle_name?: string,
   phone?: string,
@@ -118,7 +118,7 @@ Three-level hierarchy:
   type: "axial_length",
   eye: "right" | "left",
   value_mm: number,         // 15-35 mm range
-
+  
   // Quality metrics
   signal_noise?: number,    // SNR (>5.0 good)
   measurements?: number,    // Count (≥5 recommended)
@@ -132,13 +132,13 @@ Three-level hierarchy:
 {
   type: "cornea",
   eye: "right" | "left",
-
+  
   // Values in mm only
   k1_mm: number,            // Flatter meridian (5.5-10.0)
   k2_mm: number,            // Steeper meridian (5.5-10.0)
   axis_k1: number,          // 0-180°
   axis_k2: number,          // 0-180°
-
+  
   corneal_diameter?: number,  // 9.0-14.0 mm
   corneal_thickness?: number, // 400-700 µm
 }
@@ -152,16 +152,16 @@ Three-level hierarchy:
 {
   type: "refraction",
   eye: "right" | "left",
-
+  
   sphere: number,           // -50 to +50 D
   cylinder: number,         // -20 to +20 D
   axis: number,             // 0-180°
-
+  
   addition?: number,        // 0 to +4 D
   vertex?: number,          // 8-20 mm
   prism?: number,           // 0-20 prism D
   prism_base?: number,      // 0-360°
-
+  
   va_cc?: number,           // 0.01-2.0 (corrected VA)
   refraction_type?: "subjective" | "objective",
 }

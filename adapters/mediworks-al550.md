@@ -70,7 +70,7 @@ AL550 exports data as JSON:
 **Axial Measurements:**
 ```
 dataFilter[0] → Axial length (mm)
-dataFilter[1] → Corneal thickness (mm)
+dataFilter[1] → Corneal thickness (mm) 
 dataFilter[2] → Anterior chamber depth (mm)
 dataFilter[3] → Lens thickness (mm)
 ```
@@ -78,7 +78,7 @@ dataFilter[3] → Lens thickness (mm)
 **Complete Field Mappings:**
 
 | AL550 | DATEYE | Unit | Notes |
-|-------|--------|------|---------|
+|-------|--------|------|-------|
 | **Axial Length** ||||
 | `AxialCase.Data.dataFilter[0]` | `axial_length.value_mm` | mm | |
 | `AxialCase.Data.snrData[0]` | `axial_length.signal_noise` | - | Signal quality |
@@ -194,134 +194,16 @@ Default URL: `http://<device-ip>:8080`
 ### Range Validation
 
 | Measurement | Normal | Extended | Action |
-|-------------|--------|----------|---------|
+|-------------|--------|----------|--------|
 | Axial Length | 22-26mm | 15-35mm | Flag if outside |
 | Keratometry | 40-48D | 38-50D | Flag if outside |
 | ACD | 2.5-4.0mm | 2.0-5.0mm | Flag if outside |
 | Lens Thickness | 3.5-5.0mm | 3.0-6.0mm | Flag if outside |
 
-## Adapter Implementation
-
-```dart
-class MediworksAL550Adapter extends DataAdapter {
-  @override
-  String get id => 'mediworks_al550';
-
-  @override
-  Future<ParseResult?> parseFile(File file) async {
-    if (!file.path.endsWith('.json')) return null;
-
-    final json = jsonDecode(await file.readAsString());
-
-    if (json['DeviceModel'] != 'AL550') return null;
-
-    // Extract patient
-    final patient = {
-      'first_name': json['PatientInfo']['firstname'],
-      'last_name': json['PatientInfo']['lastname'],
-      'birth_date': json['PatientInfo']['birthday'],
-      'gender': _mapGender(json['PatientInfo']['gender']),
-    };
-
-    // Extract measurements
-    final measurements = <Measurement>[];
-
-    for (final examCase in json['Cases']) {
-      final examTime = DateTime.parse(examCase['CheckTime']);
-
-      // Process each eye
-      for (final eye in ['OD', 'OS']) {
-        final eyeData = examCase[eye];
-        if (eyeData == null) continue;
-
-        final eyeSide = eye == 'OD' ? 'right' : 'left';
-
-        // Axial length
-        if (eyeData['AxialCase'] != null) {
-          final data = eyeData['AxialCase']['Data'];
-          measurements.add(Measurement('axial_length', {
-            'eye': eyeSide,
-            'value_mm': data['dataFilter'][0],
-            'signal_noise': data['snrData'][0],
-            'measurements': 5,  // Device default
-            'data_source': 'device',
-            'measured_at': examTime.toIso8601String(),
-          }));
-        }
-
-        // Keratometry and corneal measurements
-        if (eyeData['TopographyCase'] != null) {
-          final cornea = eyeData['TopographyCase']['Data']['CorneaFront'];
-          final axialData = eyeData['AxialCase']?['Data'];
-          final wtwData = eyeData['WTWCase']?['Data'];
-
-          measurements.add(Measurement('cornea', {
-            'eye': eyeSide,
-            'k1_mm': cornea['Rf'],
-            'k2_mm': cornea['Rs'],
-            'axis_k1': cornea['AxisFlat'],
-            'axis_k2': cornea['AxisSteep'],
-            'corneal_diameter': wtwData?['wtw']?['r'] != null
-              ? wtwData['wtw']['r'] * 2  // Convert radius to diameter
-              : null,
-            'corneal_thickness': axialData?['dataFilter']?[1] != null
-              ? (axialData['dataFilter'][1] * 1000).round()  // Convert mm to μm
-              : null,
-            'data_source': 'device',
-          }));
-        }
-      }
-    }
-
-    return ParseResult(
-      externalPid: 'al550_${json['PatientInfo']['patientId']}',
-      patientData: patient,
-      measurements: measurements,
-      examDate: examTime.toLocal(),
-    );
-  }
-
-  @override
-  Future<void> exportData(Map<String, dynamic> event, ExportTarget target) async {
-    // Get decrypted patient data
-    final patient = await getPatientData(event['secret_pid']);
-
-    // Check if patient exists on device
-    final existing = await _getExistingPatients(target);
-
-    if (_patientExists(existing, patient)) {
-      return; // Already registered
-    }
-
-    // Prepare patient data
-    final payload = [{
-      'patientId': patient['external_ids']?['al550'] ??
-                   _generatePatientId(),
-      'firstname': patient['first_name'],
-      'lastname': patient['last_name'],
-      'gender': _mapGenderToAL550(patient['gender']),
-      'birthday': patient['birth_date'],
-      'refractiveSurgery': 'NONE',
-    }];
-
-    // Send to device
-    final response = await http.post(
-      Uri.parse('http://${target.config['host']}:${target.config['port']}/setPatients'),
-      headers: {'Content-Type': 'multipart/form-data'},
-      body: _createMultipartBody(payload),
-    );
-
-    if (response.body != 'ok') {
-      throw Exception('AL550 registration failed');
-    }
-  }
-}
-```
-
 ## Error Handling
 
 | Error | Import | Export |
-|-------|--------|---------|
+|-------|--------|--------|
 | Network timeout | N/A | Retry with backoff |
 | Invalid JSON | Skip file | N/A |
 | Missing required field | Import partial | Skip patient |
@@ -366,4 +248,3 @@ Complete AL550 API documentation available in `api-reference/mediworks/`
 - [Adapter Development](../adapter-development.md)
 - [Data Formats](../data-formats.md)
 - [AL550 API Documentation](../external-apis/mediworks/README.md)
-

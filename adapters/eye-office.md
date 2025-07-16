@@ -77,7 +77,7 @@ Data extraction pipeline:
 ### Patient Demographics
 
 | Eye-Office Field | DATEYE Field | Data Type |
-|-----------------|--------------|-------|
+|-----------------|--------------|-----------||
 | `firstname` | `first_name` | String (required) |
 | `lastname` | `last_name` | String (required) |
 | `birthday` | `birth_date` | Date (YYYY-MM-DD) |
@@ -87,7 +87,7 @@ Data extraction pipeline:
 ### Refraction Measurements
 
 | Eye-Office Field | DATEYE Field | Unit | Description |
-|-----------------|--------------|------|-----------|
+|-----------------|--------------|------|-------------|
 | `sphere` | `sphere` | diopters | Spherical correction |
 | `cylinder` | `cylinder` | diopters | Cylindrical correction |
 | `axisCylinder` | `axis` | degrees | Cylinder axis (0-180) |
@@ -116,7 +116,7 @@ if (prismHorizontalValue > 0 || prismVerticalValue > 0) {
 ### Complete Prism Mapping
 
 | Eye-Office Field | DATEYE Field | Unit | Description |
-|-----------------|--------------|------|-----------|
+|-----------------|--------------|------|-------------|
 | `prismHorizontalValue` | - | prism diopters | Used for calculation |
 | `prismHorizontalAxis` | - | degrees | Used for calculation |
 | `prismVerticalValue` | - | prism diopters | Used for calculation |
@@ -196,49 +196,10 @@ Response: Tree structure containing { "name": "Export", "id": 789 }
 GET /v1/customer?crmcriteria=789&lastChangedGreaterThan=2024-01-01T00:00:00Z
 ```
 
-### Patient Creation (Optional)
-
-```http
-POST /v1/customer
-Content-Type: application/json
-{
-  "branch": 1,
-  "firstname": "Max",
-  "lastname": "Mustermann",
-  "birthday": "2010-03-15"
-}
-```
-
-### Delta Synchronization
-
-Incremental sync implementation:
-
-```typescript
-async function deltaSync(lastSyncTime: DateTime) {
-  // Retrieve cached export criterion
-  const exportId = await getExportCriterionId();
-
-  // Query modified patients
-  const patients = await api.get('/customer', {
-    crmcriteria: exportId,
-    lastChangedGreaterThan: lastSyncTime.toISO(),
-    pageSize: 100
-  });
-
-  // Fetch refraction history
-  for (const patient of patients.data) {
-    const refractions = await api.get('/refraction', {
-      customerId: patient.id,
-      latestDataOnly: false
-    });
-  }
-}
-```
-
 ### API Endpoint Reference
 
 | Endpoint | Method | Purpose | Frequency |
-|----------|--------|---------|-----------|
+|----------|--------|---------|-----------||
 | `/v1/login` | POST | Session creation | Startup |
 | `/v1/ping` | GET | Session maintenance | 5 minutes |
 | `/v1/logout` | GET | Session termination | Shutdown |
@@ -257,153 +218,6 @@ async function deltaSync(lastSyncTime: DateTime) {
 | Missing required fields | Skip record, log error |
 | Invalid date format | Default to current date |
 | No refraction data | Import demographics only |
-
-## Adapter Implementation
-
-```dart
-class EyeOfficeImportAdapter implements ImportAdapter {
-  final EyeOfficeApiClient _apiClient;
-  final int _crmExportId;
-
-  @override
-  String get id => 'eye_office';
-
-  @override
-  String get displayName => 'Eye-Office';
-
-  Future<List<ParseResult>> importWithDelta(DateTime lastSync) async {
-    // Query modified patients
-    final patients = await _apiClient.getCustomers(
-      crmcriteria: _crmExportId,
-      lastChangedGreaterThan: lastSync,
-    );
-
-    final results = <ParseResult>[];
-
-    for (final patient in patients) {
-      // Retrieve refraction history
-      final refractions = await _apiClient.getRefractions(
-        customerId: patient.id,
-      );
-
-      // Map patient demographics
-      final patientData = {
-        'first_name': patient.firstname,
-        'last_name': patient.lastname,
-        'birth_date': patient.birthday,
-        'gender': _mapGender(patient.sex),
-      };
-
-      // Extract measurements
-      final measurements = <Measurement>[];
-      if (refractions.isNotEmpty) {
-        final latest = refractions.first;
-
-        if (latest.rightEye != null) {
-          measurements.add(_parseRefraction(latest.rightEye, 'right'));
-        }
-
-        if (latest.leftEye != null) {
-          measurements.add(_parseRefraction(latest.leftEye, 'left'));
-        }
-      }
-
-      results.add(ParseResult(
-        externalPid: 'eo_${patient.id}',
-        patientData: patientData,
-        measurements: measurements,
-        examDate: refractions.firstOrNull?.date ?? DateTime.now(),
-      ));
-    }
-
-    return results;
-  }
-
-  Measurement _parseRefraction(EyeData data, String eye) {
-    return Measurement.refraction(
-      eye: eye,
-      sphere: data.sphere,
-      cylinder: data.cylinder,
-      axis: data.axisCylinder,
-      addition: data.addition,
-      vertex: data.backVertexDistance,
-      prism: _calculateResultantPrism(data),
-      prism_base: _calculatePrismBase(data),
-      va_cc: data.visusCc,
-      refraction_type: 'subjective',
-      condition: 'regular',
-      data_source: 'device',
-    );
-  }
-}
-```
-
-## Data Mapping
-
-### Patient Demographics
-```json
-// Eye-Office API
-{
-  "id": 12345,
-  "firstname": "Anna",
-  "lastname": "Schmidt",
-  "birthday": "2010-03-15",
-  "sex": "female"
-}
-```
-
-```dart
-// DATEYE Format
-Patient(
-  externalId: "EYE-OFFICE-12345",
-  firstName: "Anna",
-  lastName: "Schmidt",
-  birthDate: DateTime(2010, 3, 15),
-  gender: Gender.female,
-)
-```
-
-### Refraction Data
-```json
-// Eye-Office API
-"refrRight": {
-  "sphere": -2.25,
-  "cylinder": -0.50,
-  "axisCylinder": 90,
-  "addition": 2.00,
-  "visusCc": 1.0
-}
-```
-
-```dart
-// DATEYE Format
-Measurement.refraction(
-  eye: 'right',
-  sphere: -2.25,
-  cylinder: -0.50,
-  axis: 90,
-  addition: 2.00,
-  va_cc: 1.0,
-  refraction_type: 'subjective',
-  condition: 'regular',
-  data_source: 'device',
-)
-```
-
-### Field Mappings
-
-| Eye-Office Field | DATEYE Field | Notes |
-|------------------|--------------|-------|
-| `id` | `external_id` | Prefixed with "EYE-OFFICE-" |
-| `firstname` | `first_name` | Direct mapping |
-| `lastname` | `last_name` | Direct mapping |
-| `birthday` | `birth_date` | Parse to DateTime |
-| `sex` | `gender` | Normalize to enum |
-| `sphere` | `refraction.sphere` | Direct mapping |
-| `cylinder` | `refraction.cylinder` | Direct mapping |
-| `axisCylinder` | `refraction.axis` | Direct mapping |
-| `addition` | `refraction.addition` | Optional field |
-| `visusCc` | `va_cc` | Corrected vision (part of refraction) |
 
 ## Testing Requirements
 

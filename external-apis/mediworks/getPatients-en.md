@@ -24,19 +24,19 @@ interface IPatient {
   firstname: string;
   lastname: string;
   patientId: string;
-  gender: 'M' | 'F'; 
+  gender: 'M' | 'F';
   birthday: string;
-  address: string | ''; 
-  phone: string | ''; 
-  email: string | ''; 
-  refractiveSurgery: 'D' | 'NONE' | 'LASIK' | 'PRK'; 
+  address: string | '';
+  phone: string | '';
+  email: string | '';
+  refractiveSurgery: 'D' | 'NONE' | 'LASIK' | 'PRK';
   age: number;
   status: 'unchecked';
   pid: string;
-  checkTime: number; 
-  createTime: number; 
+  checkTime: number;
+  createTime: number;
   isDeleted: boolean;
-  updateTime: number; 
+  updateTime: number;
 }
 
 ```

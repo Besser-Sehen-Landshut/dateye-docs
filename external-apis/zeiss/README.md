@@ -16,7 +16,7 @@ ZEISS devices export measurement data using DICOM standards.
 ### DICOM SOP Classes
 
 - **Ophthalmic Axial Measurements Storage** - Axial length, ACD, lens thickness
-- **Keratometry Measurements Storage** - Corneal curvature measurements  
+- **Keratometry Measurements Storage** - Corneal curvature measurements
 - **Intraocular Lens Calculations Storage** - IOL power calculations
 - **Ophthalmic Photography 8 Bit Image Storage** - Reference images
 - **Encapsulated PDF Storage** - Measurement reports

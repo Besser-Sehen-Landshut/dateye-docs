@@ -1,120 +1,94 @@
 # DATEYE Documentation
 
-Comprehensive documentation for the DATEYE medical device integration platform.
+Complete technical documentation for the DATEYE medical device integration platform.
 
-## Quick Navigation
+## Overview
 
-- **🚀 [Getting Started](../README.md)** - Project overview and quick start guide
-- **👨‍💻 [Technical Guide](../development/TECHNICAL-GUIDE.md)** - Complete setup, implementation, and troubleshooting
-- **🏗️ [System Architecture](architecture.md)** - Technical architecture, security, and file storage
-- **📋 [Executive Summary](executive-summary.md)** - Business overview and system requirements
+- [Architecture](architecture.md) - System design, technical principles, and requirements
+
+## Implementation
+
+- [Implementation Guide](implementation/README.md) - Current development tasks and priorities
+- [Current Tasks](implementation/current-tasks.md) - Step-by-step implementation instructions
 
 ## Core Documentation
 
-### System Design
-- [**Architecture Overview**](architecture.md) - System design, patterns, and technology stack
-- [**Data Formats**](data-formats.md) - NDJSON specifications and data models
-- [**Adapter Development**](adapter-development.md) - Creating medical device integrations
+### Data Handling
 
-### Implementation Guides
-- [**Flutter Implementation**](flutter-implementation.md) - UI architecture and cross-platform development
-- [**Architecture Deep Dive**](architecture/) - Detailed technical specifications
-  - [Dependency Injection](architecture/dependency-injection.md)
-  - [Encryption Implementation](architecture/encryption.md)
-  - [Project Structure](architecture/project-structure.md)
-  - [State Management](architecture/state-management.md)
+- [Data Formats](data-formats.md) - Complete specification of file formats, data structures, and measurement types
 
-### Operations
-- [**Executive Summary**](executive-summary.md) - Business overview, system requirements, and project status
-- [**Technical Implementation**](../development/TECHNICAL-GUIDE.md) - Installation, deployment, and maintenance procedures
+### Development
 
-## UI/UX Documentation
+- [Adapter Development](adapter-development.md) - Creating ImportAdapter and ExportAdapter implementations
+- [Flutter Implementation](flutter-implementation.md) - Platform-native desktop application development
 
-### Design System
-- [**UI Design Overview**](ui-design/README.md) - Design philosophy and platform-native approach
-- [**Design System**](ui-design/design-system.md) - Colors, typography, and component specifications
+### Security
 
-### Screen Specifications
-- [**Dashboard**](ui-design/dashboard/dashboard.md) - Real-time status overview
-- [**Connections**](ui-design/connections/connections.md) - Source → Target workflow management
-- [**History**](ui-design/history/history.md) - Complete operation audit trail
-- [**Settings**](ui-design/settings/settings.md) - Application configuration
+- [Encryption Implementation](security/encryption-planned.md) - Patient data protection strategy
 
-### Specialized Interfaces
-- [**Eye-Office Setup**](ui-design/eye-office-setup/eye-office-setup.md) - API integration wizard
-- [**Eye-Office Sync Details**](ui-design/eye-office-setup/eye-office-sync-details.md) - Extended sync UI specifications
-- [**Identity Key Dialog**](ui-design/identity-key-dialog/identity-key-dialog.md) - Encryption key management
+## Device Adapters
 
-### Brand Assets
-- [**Logo System**](ui-design/logo/README.md) - Logo specifications and usage guidelines
+### Overview
+- [Adapter Index](adapters/README.md) - Complete list of supported devices
 
-## Device Integration
+### Import/Export Adapters
 
-### Import Adapters (Data Sources)
-- [**Topcon MYAH**](adapters/topcon-myah.md) - Myopia control biometer
-- [**ZEISS IOLMaster**](adapters/zeiss-iolmaster.md) - Optical biometry devices
-- [**Eye-Office**](adapters/eye-office.md) - Practice management system API
+- [Topcon MYAH](adapters/topcon-myah.md) - Myopia control device integration
+- [ZEISS IOLMaster](adapters/zeiss-iolmaster.md) - Optical biometry integration
+- [Eye-Office](adapters/eye-office.md) - Practice management system integration
+- [Mediworks AL550](adapters/mediworks-al550.md) - Optical biometer integration
 
-### Export Adapters (Data Targets)
-- [**Mediworks AL550**](adapters/mediworks-al550.md) - Optical biometer with bidirectional capability
+## External APIs
 
-## External API Reference
+### Eye-Office
+- [API Overview](external-apis/eye-office/README.md) - REST API documentation
+- [API Specification](external-apis/eye-office/eye-office-api-1.yaml) - OpenAPI 3.0 specification
 
-### Device APIs
-- [**Eye-Office API**](external-apis/eye-office/README.md) - Practice management REST API
-- [**Mediworks AL550 API**](external-apis/mediworks/README.md) - Biometer HTTP interface
-  - [Export File Format](external-apis/mediworks/AL550ExportFile-EN.md) - JSON export specification
-  - [Get Patients API](external-apis/mediworks/getPatients-en.md) - Patient retrieval endpoint
-  - [Set Patients API](external-apis/mediworks/setPatients-en.md) - Patient registration endpoint
-- [**ZEISS API**](external-apis/zeiss/README.md) - DICOM specifications and data structures
-  - [IOLMaster 700 Types](external-apis/zeiss/IOLMaster700Types.md) - DICOM data structures and SOP classes
+### Mediworks
+- [API Overview](external-apis/mediworks/README.md) - AL550 integration documentation
+- [Export File Format](external-apis/mediworks/AL550ExportFile-EN.md) - Detailed field descriptions
+- [GET Patients Endpoint](external-apis/mediworks/getPatients-en.md) - Patient retrieval API
+- [SET Patients Endpoint](external-apis/mediworks/setPatients-en.md) - Patient registration API
 
-## Development Resources
+### ZEISS
+- [API Overview](external-apis/zeiss/README.md) - DICOM integration documentation
+- [IOLMaster 700 Types](external-apis/zeiss/IOLMaster700Types.md) - Complete DICOM structure reference
 
-### Active Development
-- [**Current Status**](../development/README.md) - Implementation progress and remaining tasks
-- [**Technical Guide**](../development/TECHNICAL-GUIDE.md) - Detailed technical implementation analysis
-- [**Implementation Roadmap**](../development/IMPLEMENTATION-ROADMAP.md) - Step-by-step development plan
-- [**Developer Quick Reference**](../development/DEVELOPER-QUICK-REFERENCE.md) - Essential implementation guide
+## User Interface Design
 
-## Implementation Status
+### Overview
+- [UI Design Philosophy](ui-design/README.md) - Design principles and guidelines
+- [Design System](ui-design/design-system.md) - Platform-native component specifications
 
-### ✅ Production Ready
-- **Core Architecture**: Clean Architecture with ImportAdapter pattern implemented
-- **Import Pipeline**: Complete with Topcon MYAH reference implementation
-- **Storage Framework**: NDJSON file structure and database abstraction defined
-- **UI Framework**: Flutter with platform-native components infrastructure
+### Screens
 
-### ❌ Needs Implementation
-- **Export Architecture**: Complete IExportAdapter pattern implementation
-- **Export Adapters**: AL550, File Export, Myopia.cloud integrations
-- **End-to-End Pipeline**: Import → Storage → Export workflow
-- **UI Workflow Management**: Source → Target configuration interface
-- **Testing Infrastructure**: End-to-end validation suite
+#### Dashboard
+- [Dashboard Screen](ui-design/dashboard/dashboard.md) - Main status overview
 
-### 📋 Roadmap
-- **Patient Data Encryption**: AES-256 implementation for production security
-- **Advanced Device Support**: Eye-Office API, ZEISS IOLMaster DICOM
-- **Platform Optimization**: Native Windows, macOS, Linux experiences
+#### Connections
+- [Connections Overview](ui-design/connections/README.md) - Import/Export workflow management
+- [Connections Screen](ui-design/connections/connections.md) - Detailed specifications
 
-## Documentation Principles
+#### History
+- [History Screen](ui-design/history/history.md) - Complete operation logs
 
-This documentation follows these principles:
+#### Settings
+- [Settings Screen](ui-design/settings/settings.md) - Application configuration
 
-- **User-Centric**: Clear navigation for different roles (users, developers, administrators)
-- **Implementation-Focused**: Practical guides with concrete examples
-- **Architecture-Driven**: Technical decisions explained with rationale
-- **Maintenance-Friendly**: Modular structure supporting independent updates
+### Additional UI Components
 
-## Quick Reference Links
+- [Eye-Office Setup](ui-design/eye-office-setup/eye-office-setup.md) - API connection wizard
+- [Eye-Office Sync Details](ui-design/eye-office-setup/eye-office-sync-details.md) - Synchronization dialogs
+- [Identity Key Dialog](ui-design/identity-key-dialog/identity-key-dialog.md) - Encryption key notification
 
-| Role | Primary Documentation | Secondary Resources |
-|------|---------------------|-------------------|
-| **Medical Practice** | [Executive Summary](executive-summary.md) | [Technical Guide](../development/TECHNICAL-GUIDE.md) |
-| **Software Developer** | [Technical Guide](../development/TECHNICAL-GUIDE.md) | [Architecture](architecture.md), [Adapter Development](adapter-development.md) |
-| **System Administrator** | [Technical Guide](../development/TECHNICAL-GUIDE.md) | [Architecture](architecture.md), [Security](architecture/encryption.md) |
-| **Project Manager** | [Executive Summary](executive-summary.md) | [Development Status](../development/README.md) |
+### Logo System
+- [Logo Documentation](ui-design/logo/README.md) - Complete logo system and usage guidelines
+
+## Maintenance
+
+Run update script: `cd /update/ && ./update.sh`
 
 ---
 
-**DATEYE** - Professional medical device integration through proven ImportAdapter/ExportAdapter architecture
+Generated: 2025-01-13  
+Update command: `cd /update/ && ./update.sh`

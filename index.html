@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DATEYE Documentation</title>
+  <meta name="description" content="Technical documentation for DATEYE medical device integration platform">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: 'DATEYE Documentation',
+      repo: 'https://github.com/Besser-Sehen-Landshut/dateye-docs',
+      homepage: 'README.md',
+      loadSidebar: true,
+      subMaxLevel: 3,
+      maxLevel: 4,
+      search: 'auto',
+      auto2top: true,
+      coverpage: false,
+      executeScript: true,
+      loadNavbar: false,
+      mergeNavbar: true,
+      formatUpdated: '{MM}/{DD} {HH}:{mm}',
+      plugins: [
+        function(hook, vm) {
+          hook.beforeEach(function(html) {
+            var url = 'https://github.com/Besser-Sehen-Landshut/dateye-docs/blob/main/' + vm.route.file;
+            var editHtml = '[:memo: Edit on GitHub](' + url + ')\n\n';
+            return editHtml + html;
+          });
+        }
+      ]
+    }
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-dart.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-yaml.min.js"></script>
+</body>
+</html>
